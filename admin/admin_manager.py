@@ -65,6 +65,12 @@ class AdminManager:
             result.append(self.to_dict(admin))
         return result
 
+    def get(self, identifier: str) -> dict:
+        admin = self.mongo.find_one({"identifier": identifier})
+        if not admin:
+            raise Exception(f"Admin {identifier} not found")
+        return self.to_dict(admin)
+
     @staticmethod
     def to_dict(self):
         return {

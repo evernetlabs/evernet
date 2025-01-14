@@ -29,3 +29,8 @@ class AdminAPI:
         @authenticate_admin
         def fetch_admins(_):
             return self.admin_manager.fetch(page(), size())
+
+        @self.app.get("/api/v1/admins/<identifier>")
+        @authenticate_admin
+        def get_admin_details(_, identifier):
+            return self.admin_manager.get(identifier)
