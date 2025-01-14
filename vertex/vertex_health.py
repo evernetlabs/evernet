@@ -1,7 +1,7 @@
 from flask import Flask
 
 
-class Health:
+class VertexHealth:
 
     def __init__(self, app: Flask):
         self.app = app

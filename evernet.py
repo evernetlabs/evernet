@@ -1,16 +1,22 @@
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify, g
 import os
-from vertex import Health, Info
+import pymongo
+from vertex import VertexHealth, VertexInfo
+from admin import AdminManager, AdminAPI
 
 load_dotenv()
 jwt_signing_key = os.getenv("JWT_SIGNING_KEY")
 vertex_endpoint = os.getenv("VERTEX_ENDPOINT")
+db = pymongo.MongoClient(os.getenv("DB_HOST"), int(os.getenv("DB_PORT")))[os.getenv("DB_NAME")]
 
 app = Flask(__name__)
 
-Health(app).register()
-Info(app, os.getenv("VERTEX_NAME"), vertex_endpoint, os.getenv("VERTEX_DESCRIPTION")).register()
+admin_manager = AdminManager(db.admins)
+
+VertexHealth(app).register()
+VertexInfo(app, os.getenv("VERTEX_NAME"), vertex_endpoint, os.getenv("VERTEX_DESCRIPTION")).register()
+AdminAPI(app, admin_manager).register()
 
 @app.before_request
 def before_request():

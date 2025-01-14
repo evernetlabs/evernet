@@ -1,7 +1,7 @@
 from flask import Flask
 
 
-class Info:
+class VertexInfo:
     def __init__(self, app: Flask, vertex_name: str, vertex_endpoint: str, vertex_description: str):
         self.app = app
         self.vertex_name = vertex_name
