@@ -54,3 +54,10 @@ class AdminAPI:
                 required_param("identifier"),
                 admin["identifier"],
             )
+
+        @self.app.delete("/api/v1/admins/<identifier>")
+        @authenticate_admin
+        def delete_admin(_, identifier):
+            return self.admin_manager.delete(
+                identifier,
+            )

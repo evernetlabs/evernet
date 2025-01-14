@@ -57,6 +57,7 @@ class AdminManager:
                 "sub": admin["identifier"],
                 "type": "admin",
                 "iat": int(time.time()),
+                "exp": int(time.time()) + 3600 * 24,
                 "iss": self.vertex_endpoint,
                 "aud": self.vertex_endpoint
             }, algorithm="HS256", key=self.jwt_signing_key),
@@ -70,6 +71,7 @@ class AdminManager:
         return result
 
     def get(self, identifier: str) -> dict:
+        identifier = identifier.lower()
         admin = self.mongo.find_one({"identifier": identifier})
         if not admin:
             raise Exception(f"Admin {identifier} not found")
@@ -84,6 +86,8 @@ class AdminManager:
             "updated_at": datetime.now(),
             "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
         }
+
+        identifier = identifier.lower()
 
         result = self.mongo.update_one({
             "identifier": identifier,
@@ -103,6 +107,8 @@ class AdminManager:
             raise Exception("Identifier must be alphanumeric")
         if len(identifier) < 3 or len(identifier) > 32:
             raise Exception("Identifier must be between 3 and 32 characters")
+
+        identifier = identifier.lower()
 
         password = self.password_generator.generate()
 
@@ -125,8 +131,19 @@ class AdminManager:
             "password": password,
         }
 
-    def delete(self):
-        pass
+    def delete(self, identifier: str) -> dict:
+        identifier = identifier.lower()
+
+        result = self.mongo.delete_one({
+            "identifier": identifier,
+        })
+
+        if result.deleted_count == 0:
+            raise Exception(f"Admin {identifier} not found")
+
+        return {
+            "identifier": identifier,
+        }
 
     def reset_password(self):
         pass
