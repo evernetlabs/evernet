@@ -1,0 +1,8 @@
+flask
+pymongo
+PyJWT
+bcrypt
+random-password-generator
+python-dotenv
+cryptography
+requests
