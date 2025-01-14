@@ -46,3 +46,11 @@ class AdminAPI:
                 admin["identifier"],
                 required_param("password")
             )
+
+        @self.app.post("/api/v1/admins")
+        @authenticate_admin
+        def add_admin(admin):
+            return self.admin_manager.add(
+                required_param("identifier"),
+                admin["identifier"],
+            )

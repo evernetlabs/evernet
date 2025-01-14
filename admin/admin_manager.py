@@ -1,6 +1,6 @@
 import time
 from datetime import datetime
-
+from password_generator import PasswordGenerator
 from pymongo.collection import Collection
 import bcrypt
 import jwt
@@ -11,6 +11,9 @@ class AdminManager:
         self.mongo = mongo
         self.jwt_signing_key = jwt_signing_key
         self.vertex_endpoint = vertex_endpoint
+        self.password_generator = PasswordGenerator()
+        self.password_generator.minlen = 16
+        self.password_generator.maxlen = 16
 
     def init(self, identifier: str, password: str):
         if not identifier.isalnum():
@@ -30,6 +33,7 @@ class AdminManager:
         admin_id = self.mongo.insert_one({
             "identifier": identifier,
             "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+            "creator": None,
             "created_at": datetime.now(),
             "updated_at": datetime.now(),
         }).inserted_id
@@ -94,11 +98,45 @@ class AdminManager:
             "identifier": identifier,
         }
 
+    def add(self, identifier: str, creator: str) -> dict:
+        if not identifier.isalnum():
+            raise Exception("Identifier must be alphanumeric")
+        if len(identifier) < 3 or len(identifier) > 32:
+            raise Exception("Identifier must be between 3 and 32 characters")
+
+        password = self.password_generator.generate()
+
+        if self.mongo.count_documents({
+            "identifier": identifier,
+        }) != 0:
+            raise Exception(f"Admin {identifier} already exists")
+
+        admin_id = self.mongo.insert_one({
+            "identifier": identifier,
+            "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+            "creator": creator,
+            "created_at": datetime.now(),
+            "updated_at": datetime.now(),
+        }).inserted_id
+
+        return {
+            "id": str(admin_id),
+            "identifier": identifier,
+            "password": password,
+        }
+
+    def delete(self):
+        pass
+
+    def reset_password(self):
+        pass
+
     @staticmethod
     def to_dict(self):
         return {
             "id": str(self["_id"]),
-            "identifier": self["identifier"],
-            "created_at": self["created_at"],
-            "updated_at": self["updated_at"],
+            "identifier": self.get("identifier"),
+            "created_at": self.get("created_at"),
+            "updated_at": self.get("updated_at"),
+            "creator": self.get("creator"),
         }
