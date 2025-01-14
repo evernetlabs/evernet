@@ -1,6 +1,6 @@
 from flask import Flask
 
-from util.api import required_param
+from util.api import required_param, authenticate_admin, size, page
 from .admin_manager import AdminManager
 
 
@@ -24,3 +24,8 @@ class AdminAPI:
                 required_param("identifier"),
                 required_param("password")
             )
+
+        @self.app.get("/api/v1/admins")
+        @authenticate_admin
+        def fetch_admins(_):
+            return self.admin_manager.fetch(page(), size())

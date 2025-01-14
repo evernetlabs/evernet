@@ -57,3 +57,19 @@ class AdminManager:
                 "aud": self.vertex_endpoint
             }, algorithm="HS256", key=self.jwt_signing_key),
         }
+
+    def fetch(self, page=0, size=50) -> list[dict]:
+        admins = self.mongo.find({}).skip(page * size).limit(size)
+        result = []
+        for admin in admins:
+            result.append(self.to_dict(admin))
+        return result
+
+    @staticmethod
+    def to_dict(self):
+        return {
+            "id": str(self["_id"]),
+            "identifier": self["identifier"],
+            "created_at": self["created_at"],
+            "updated_at": self["updated_at"],
+        }
