@@ -12,7 +12,7 @@ db = pymongo.MongoClient(os.getenv("DB_HOST"), int(os.getenv("DB_PORT")))[os.get
 
 app = Flask(__name__)
 
-admin_manager = AdminManager(db.admins)
+admin_manager = AdminManager(db.admins, jwt_signing_key, vertex_endpoint)
 
 VertexHealth(app).register()
 VertexInfo(app, os.getenv("VERTEX_NAME"), vertex_endpoint, os.getenv("VERTEX_DESCRIPTION")).register()

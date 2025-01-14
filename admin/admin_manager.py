@@ -1,12 +1,16 @@
+import time
 from datetime import datetime
 
 from pymongo.collection import Collection
 import bcrypt
+import jwt
 
 
 class AdminManager:
-    def __init__(self, mongo: Collection):
+    def __init__(self, mongo: Collection, jwt_signing_key: str, vertex_endpoint: str):
         self.mongo = mongo
+        self.jwt_signing_key = jwt_signing_key
+        self.vertex_endpoint = vertex_endpoint
 
     def init(self, identifier: str, password: str):
         if not identifier.isalnum():
@@ -33,4 +37,23 @@ class AdminManager:
         return {
             "id": str(admin_id),
             "identifier": identifier,
+        }
+
+    def get_token(self, identifier: str, password: str) -> dict:
+        identifier = identifier.lower()
+        admin = self.mongo.find_one({"identifier": identifier})
+        if not admin:
+            raise Exception(f"Admin {identifier} not found")
+
+        if not bcrypt.checkpw(password.encode(), admin["password"].encode()):
+            raise Exception("Invalid password")
+
+        return {
+            "token": jwt.encode({
+                "sub": admin["identifier"],
+                "type": "admin",
+                "iat": int(time.time()),
+                "iss": self.vertex_endpoint,
+                "aud": self.vertex_endpoint
+            }, algorithm="HS256", key=self.jwt_signing_key),
         }
