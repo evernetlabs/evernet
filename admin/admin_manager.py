@@ -71,6 +71,29 @@ class AdminManager:
             raise Exception(f"Admin {identifier} not found")
         return self.to_dict(admin)
 
+    def change_password(self, identifier: str, password: str) -> dict:
+        if password.strip() == "":
+            raise Exception("Password cannot be an empty string")
+        if len(password) < 8 or len(password) > 128:
+            raise Exception("Password must be between 8 and 128 characters")
+        fields = {
+            "updated_at": datetime.now(),
+            "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+        }
+
+        result = self.mongo.update_one({
+            "identifier": identifier,
+        }, {
+            "$set": fields
+        })
+
+        if result.matched_count == 0:
+            raise Exception(f"Admin {identifier} not found")
+
+        return {
+            "identifier": identifier,
+        }
+
     @staticmethod
     def to_dict(self):
         return {

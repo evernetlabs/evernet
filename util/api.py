@@ -52,7 +52,7 @@ def authenticate_admin(f):
             if data["type"] != "admin":
                 raise Exception("Invalid access token")
             current_admin = {
-                "username": data["sub"]
+                "identifier": data["sub"]
             }
         except Exception as _:
             raise Exception("Invalid access token")
