@@ -81,8 +81,22 @@ class EntitySchemaService:
             "node_identifier": node_identifier
         }
 
-    def delete(self):
-        pass
+    @staticmethod
+    def delete(node_identifier: str, identifier: str, version: str) -> dict:
+        count = EntitySchema.delete().where(
+            EntitySchema.node_identifier == node_identifier,
+            EntitySchema.identifier == identifier,
+            EntitySchema.version == version
+        )
+
+        if count == 0:
+            raise Exception(f"Entity schema {identifier} with version {version} not found on node {node_identifier}")
+
+        return {
+            "identifier": identifier,
+            "version": version,
+            "node_identifier": node_identifier
+        }
 
     @staticmethod
     def to_dict(entity_schema: EntitySchema):

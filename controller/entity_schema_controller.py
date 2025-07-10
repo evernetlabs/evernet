@@ -31,3 +31,19 @@ class EntitySchemaController:
         @authenticate_admin
         def get_entity_schema(admin, node_identifier, identifier: str, version: str):
             return EntitySchemaService.get(node_identifier, identifier, version)
+
+        @self.app.put("/api/v1/admins/nodes/<node_identifier>/entity-schemas/<identifier>/<version>")
+        @authenticate_admin
+        def update_entity_schema(admin, node_identifier, identifier: str, version: str):
+            return EntitySchemaService.update(
+                node_identifier,
+                identifier,
+                version,
+                required_param("display_name"),
+                optional_param("description"),
+            )
+
+        @self.app.delete("/api/v1/admins/nodes/<node_identifier>/entity-schemas/<identifier>")
+        @authenticate_admin
+        def delete_entity_schema(admin, node_identifier, identifier: str, version: str):
+            return EntitySchemaService.delete(node_identifier, identifier, version)
