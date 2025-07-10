@@ -37,8 +37,15 @@ class EntitySchemaService:
             'version': version,
         }
 
-    def fetch(self):
-        pass
+    @staticmethod
+    def fetch(node_identifier: str, page: int = 1, size: int = 50) -> list[dict]:
+        entity_schemas = EntitySchema.select().where(EntitySchema.node_identifier == node_identifier).paginate(page, size)
+
+        results = []
+        for entity_schema in entity_schemas:
+            results.append(EntitySchemaService.to_dict(entity_schema))
+
+        return results
 
     def get(self):
         pass
@@ -48,3 +55,17 @@ class EntitySchemaService:
 
     def delete(self):
         pass
+
+    @staticmethod
+    def to_dict(entity_schema: EntitySchema):
+        return {
+            'id': entity_schema.get_id(),
+            'node_identifier': entity_schema.node_identifier,
+            'identifier': entity_schema.identifier,
+            'version': entity_schema.version,
+            'display_name': entity_schema.display_name,
+            'description': entity_schema.description,
+            'creator': entity_schema.creator,
+            'created_at': entity_schema.created_at,
+            'updated_at': entity_schema.updated_at,
+        }

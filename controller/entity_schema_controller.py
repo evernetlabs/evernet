@@ -1,7 +1,7 @@
 from flask import Flask
 
 from service.entity_schema_service import EntitySchemaService
-from utils.api import authenticate_admin, required_param, optional_param
+from utils.api import authenticate_admin, required_param, optional_param, page, size
 
 
 class EntitySchemaController:
@@ -21,3 +21,8 @@ class EntitySchemaController:
                 optional_param("description"),
                 admin["identifier"],
             )
+
+        @self.app.get("/api/v1/admins/nodes/<node_identifier>/entity-schemas")
+        @authenticate_admin
+        def fetch_entity_schemas(admin, node_identifier):
+            return EntitySchemaService.fetch(node_identifier, page(), size())
