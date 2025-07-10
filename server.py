@@ -7,6 +7,7 @@ from controller.admin_controller import AdminController
 from controller.entity_schema_controller import EntitySchemaController
 from controller.health_check_controller import HealthCheckController
 from controller.node_controller import NodeController
+from controller.page_controller import PageController
 from controller.user_controller import UserController
 from model.database import db
 from model.admin import Admin
@@ -34,6 +35,8 @@ AdminController(app).register()
 NodeController(app).register()
 UserController(app).register()
 EntitySchemaController(app).register()
+
+PageController(app).register()
 
 
 @app.before_request
