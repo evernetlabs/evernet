@@ -124,6 +124,10 @@ class NodeService:
         }
 
     @staticmethod
+    def exists(identifier: str) -> bool:
+        return Node.select().where(Node.identifier == identifier).exists()
+
+    @staticmethod
     def to_dict(node: Node) -> dict:
         return {
             'id': node.get_id(),

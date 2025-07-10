@@ -4,18 +4,20 @@ import traceback
 from flask import Flask, request, jsonify, g
 
 from controller.admin_controller import AdminController
+from controller.entity_schema_controller import EntitySchemaController
 from controller.health_check_controller import HealthCheckController
 from controller.node_controller import NodeController
 from controller.user_controller import UserController
 from model.database import db
 from model.admin import Admin
 from model.config import Config
+from model.entity_schema import EntitySchema
 from model.node import Node
 from model.user import User
 
 from service.config_service import ConfigService
 
-db.create_tables([Admin, Config, Node, User])
+db.create_tables([Admin, Config, Node, User, EntitySchema])
 
 app = Flask(__name__)
 
@@ -25,6 +27,7 @@ HealthCheckController(app).register()
 AdminController(app).register()
 NodeController(app).register()
 UserController(app).register()
+EntitySchemaController(app).register()
 
 
 @app.before_request

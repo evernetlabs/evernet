@@ -1,0 +1,23 @@
+from flask import Flask
+
+from service.entity_schema_service import EntitySchemaService
+from utils.api import authenticate_admin, required_param, optional_param
+
+
+class EntitySchemaController:
+    def __init__(self, app: Flask):
+        self.app = app
+
+    def register(self):
+
+        @self.app.post("/api/v1/admins/nodes/<node_identifier>/entity-schemas")
+        @authenticate_admin
+        def create_entity_schema(admin, node_identifier):
+            return EntitySchemaService.create(
+                node_identifier,
+                required_param("identifier"),
+                required_param("version"),
+                required_param("display_name"),
+                optional_param("description"),
+                admin["identifier"],
+            )
