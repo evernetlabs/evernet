@@ -61,8 +61,25 @@ class EntitySchemaService:
         return EntitySchemaService.to_dict(entity_schema)
 
 
-    def update(self):
-        pass
+    @staticmethod
+    def update(node_identifier: str, identifier: str, version: str, display_name: str, description: str) ->  dict:
+        count = EntitySchema.update(
+            display_name=display_name,
+            description=description,
+        ).where(
+            EntitySchema.node_identifier == node_identifier,
+            EntitySchema.identifier == identifier,
+            EntitySchema.version == version,
+        )
+
+        if count == 0:
+            raise Exception(f"Entity schema {identifier} with version {version} not found on node {node_identifier}")
+
+        return {
+            "identifier": identifier,
+            "version": version,
+            "node_identifier": node_identifier
+        }
 
     def delete(self):
         pass
