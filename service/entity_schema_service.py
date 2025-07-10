@@ -47,8 +47,19 @@ class EntitySchemaService:
 
         return results
 
-    def get(self):
-        pass
+    @staticmethod
+    def get(node_identifier: str, identifier: str, version: str) -> dict:
+        entity_schema = EntitySchema.select().where(
+            EntitySchema.node_identifier == node_identifier,
+            EntitySchema.identifier == identifier,
+            EntitySchema.version == version
+        ).get_or_none()
+
+        if not entity_schema:
+            raise Exception(f"Entity schema {identifier} with version {version} not found on node {node_identifier}")
+
+        return EntitySchemaService.to_dict(entity_schema)
+
 
     def update(self):
         pass

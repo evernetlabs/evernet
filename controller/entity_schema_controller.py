@@ -26,3 +26,8 @@ class EntitySchemaController:
         @authenticate_admin
         def fetch_entity_schemas(admin, node_identifier):
             return EntitySchemaService.fetch(node_identifier, page(), size())
+
+        @self.app.get("/api/v1/admins/nodes/<node_identifier>/entity-schemas/<identifier>/<version>")
+        @authenticate_admin
+        def get_entity_schema(admin, node_identifier, identifier: str, version: str):
+            return EntitySchemaService.get(node_identifier, identifier, version)
