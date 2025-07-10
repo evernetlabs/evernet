@@ -11,13 +11,19 @@ from controller.user_controller import UserController
 from model.database import db
 from model.admin import Admin
 from model.config import Config
+from model.entity_action_schema import EntityActionSchema
+from model.entity_event_schema import EntityEventSchema
+from model.entity_property_schema import EntityPropertySchema
 from model.entity_schema import EntitySchema
 from model.node import Node
 from model.user import User
 
 from service.config_service import ConfigService
 
-db.create_tables([Admin, Config, Node, User, EntitySchema])
+db.create_tables([
+    Admin, Config, Node, User,
+    EntitySchema, EntityPropertySchema, EntityActionSchema, EntityEventSchema
+])
 
 app = Flask(__name__)
 

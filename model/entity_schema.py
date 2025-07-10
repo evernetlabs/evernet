@@ -9,7 +9,7 @@ class EntitySchema(Model):
     identifier = CharField()
     version = CharField()
     display_name = CharField()
-    description = CharField()
+    description = TextField()
     creator = CharField()
     created_at = DateTimeField(default=datetime.datetime.now(tz=datetime.timezone.utc))
     updated_at = DateTimeField(default=datetime.datetime.now(tz=datetime.timezone.utc))
