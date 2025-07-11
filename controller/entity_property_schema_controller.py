@@ -26,6 +26,7 @@ class EntityPropertySchemaController:
 
         @self.app.get(
             "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties")
+        @authenticate_admin
         def fetch_entity_property_schemas(admin, node_identifier, entity_schema_identifier, entity_schema_version):
             return EntityPropertySchemaService.fetch(
                 node_identifier,
@@ -35,6 +36,7 @@ class EntityPropertySchemaController:
 
         @self.app.get(
             "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>")
+        @authenticate_admin
         def get_entity_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version,
                                        identifier):
             return EntityPropertySchemaService.get(
@@ -46,7 +48,9 @@ class EntityPropertySchemaController:
 
         @self.app.put(
             "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>")
-        def update_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version, identifier):
+        @authenticate_admin
+        def update_entity_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version,
+                                          identifier):
             return EntityPropertySchemaService.update(
                 node_identifier,
                 entity_schema_identifier,
@@ -58,11 +62,25 @@ class EntityPropertySchemaController:
 
         @self.app.put(
             "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>/json-schema")
-        def update_property_schema_json_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version, identifier):
+        @authenticate_admin
+        def update_entity_property_schema_json_schema(admin, node_identifier, entity_schema_identifier,
+                                                      entity_schema_version, identifier):
             return EntityPropertySchemaService.update_json_schema(
                 node_identifier,
                 entity_schema_identifier,
                 entity_schema_version,
                 identifier,
                 optional_param("json_schema"),
+            )
+
+        @self.app.delete(
+            "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>")
+        @authenticate_admin
+        def delete_entity_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version,
+                                          identifier):
+            return EntityPropertySchemaService.delete(
+                node_identifier,
+                entity_schema_identifier,
+                entity_schema_version,
+                identifier
             )
