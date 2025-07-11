@@ -55,7 +55,17 @@ class EntityPropertySchemaService:
 
     @staticmethod
     def get(node_identifier: str, entity_schema_identifier: str, entity_schema_version: str, identifier: str) -> dict:
-        pass
+        entity_property_schema = EntityPropertySchema.select().where(
+            EntityPropertySchema.node_identifier == node_identifier,
+            EntityPropertySchema.entity_schema_identifier == entity_schema_identifier,
+            EntityPropertySchema.entity_schema_version == entity_schema_version,
+            EntityPropertySchema.identifier == identifier,
+        ).get_or_none()
+
+        if not entity_property_schema:
+            raise Exception(f"Property schema {identifier} for entity schema {entity_schema_identifier} with version {entity_schema_version} on node {node_identifier} not found")
+
+        return EntityPropertySchemaService.to_dict(entity_property_schema)
 
     @staticmethod
     def update():

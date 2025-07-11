@@ -4,6 +4,7 @@ import traceback
 from flask import Flask, request, jsonify, g
 
 from controller.admin_controller import AdminController
+from controller.entity_property_schema_controller import EntityPropertySchemaController
 from controller.entity_schema_controller import EntitySchemaController
 from controller.health_check_controller import HealthCheckController
 from controller.node_controller import NodeController
@@ -35,6 +36,7 @@ AdminController(app).register()
 NodeController(app).register()
 UserController(app).register()
 EntitySchemaController(app).register()
+EntityPropertySchemaController(app).register()
 
 PageController(app).register()
 

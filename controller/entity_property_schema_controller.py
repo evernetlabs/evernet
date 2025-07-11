@@ -31,3 +31,12 @@ class EntityPropertySchemaController:
                 entity_schema_identifier,
                 entity_schema_version,
             )
+
+        @self.app.get("/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>")
+        def get_entity_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version, identifier):
+            return EntityPropertySchemaService.get(
+                node_identifier,
+                entity_schema_identifier,
+                entity_schema_version,
+                identifier
+            )
