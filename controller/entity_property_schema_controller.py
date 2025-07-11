@@ -55,3 +55,14 @@ class EntityPropertySchemaController:
                 required_param("display_name"),
                 optional_param("description"),
             )
+
+        @self.app.put(
+            "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>/json-schema")
+        def update_property_schema_json_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version, identifier):
+            return EntityPropertySchemaService.update_json_schema(
+                node_identifier,
+                entity_schema_identifier,
+                entity_schema_version,
+                identifier,
+                optional_param("json_schema"),
+            )

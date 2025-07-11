@@ -1,3 +1,5 @@
+import datetime
+
 from model.entity_property_schema import EntityPropertySchema
 
 
@@ -72,6 +74,7 @@ class EntityPropertySchemaService:
         count = EntityPropertySchema.update(
             display_name=display_name,
             description=description,
+            updated_at=datetime.datetime.now(tz=datetime.timezone.utc),
         ).where(
             EntityPropertySchema.node_identifier == node_identifier,
             EntityPropertySchema.entity_schema_identifier == entity_schema_identifier,
@@ -91,7 +94,25 @@ class EntityPropertySchemaService:
 
     @staticmethod
     def update_json_schema(node_identifier: str, entity_schema_identifier: str, entity_schema_version, identifier: str, json_schema: str) -> dict:
-        pass
+        count = EntityPropertySchema.update(
+            json_schema=json_schema,
+            updated_at=datetime.datetime.now(tz=datetime.timezone.utc),
+        ).where(
+            EntityPropertySchema.node_identifier == node_identifier,
+            EntityPropertySchema.entity_schema_identifier == entity_schema_identifier,
+            EntityPropertySchema.entity_schema_version == entity_schema_version,
+            EntityPropertySchema.identifier == identifier,
+        ).execute()
+
+        if count == 0:
+            raise Exception(f"Property schema {identifier} for entity schema {entity_schema_identifier} with version {entity_schema_version} on node {node_identifier} not found")
+
+        return {
+            "node_identifier": node_identifier,
+            "entity_schema_identifier": entity_schema_identifier,
+            "entity_schema_version": entity_schema_version,
+            "identifier": identifier
+        }
 
     @staticmethod
     def delete(node_identifier: str, entity_schema_identifier: str, entity_schema_version: str, identifier: str) -> dict:

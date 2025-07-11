@@ -1,3 +1,5 @@
+import datetime
+
 from model.entity_schema import EntitySchema
 from service.node_service import NodeService
 
@@ -66,6 +68,7 @@ class EntitySchemaService:
         count = EntitySchema.update(
             display_name=display_name,
             description=description,
+            updated_at=datetime.datetime.now(datetime.timezone.utc),
         ).where(
             EntitySchema.node_identifier == node_identifier,
             EntitySchema.identifier == identifier,
