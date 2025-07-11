@@ -9,8 +9,8 @@ class EntityPropertySchemaController:
         self.app = app
 
     def register(self):
-
-        @self.app.post("/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties")
+        @self.app.post(
+            "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties")
         @authenticate_admin
         def create_entity_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version):
             return EntityPropertySchemaService.create(
@@ -24,7 +24,8 @@ class EntityPropertySchemaController:
                 admin["identifier"]
             )
 
-        @self.app.get("/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties")
+        @self.app.get(
+            "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties")
         def fetch_entity_property_schemas(admin, node_identifier, entity_schema_identifier, entity_schema_version):
             return EntityPropertySchemaService.fetch(
                 node_identifier,
@@ -32,11 +33,25 @@ class EntityPropertySchemaController:
                 entity_schema_version,
             )
 
-        @self.app.get("/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>")
-        def get_entity_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version, identifier):
+        @self.app.get(
+            "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>")
+        def get_entity_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version,
+                                       identifier):
             return EntityPropertySchemaService.get(
                 node_identifier,
                 entity_schema_identifier,
                 entity_schema_version,
                 identifier
+            )
+
+        @self.app.put(
+            "/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties/<identifier>")
+        def update_property_schema(admin, node_identifier, entity_schema_identifier, entity_schema_version, identifier):
+            return EntityPropertySchemaService.update(
+                node_identifier,
+                entity_schema_identifier,
+                entity_schema_version,
+                identifier,
+                required_param("display_name"),
+                optional_param("description"),
             )

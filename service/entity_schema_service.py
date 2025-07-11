@@ -70,7 +70,7 @@ class EntitySchemaService:
             EntitySchema.node_identifier == node_identifier,
             EntitySchema.identifier == identifier,
             EntitySchema.version == version,
-        )
+        ).execute()
 
         if count == 0:
             raise Exception(f"Entity schema {identifier} with version {version} not found on node {node_identifier}")
@@ -87,7 +87,7 @@ class EntitySchemaService:
             EntitySchema.node_identifier == node_identifier,
             EntitySchema.identifier == identifier,
             EntitySchema.version == version
-        )
+        ).execute()
 
         if count == 0:
             raise Exception(f"Entity schema {identifier} with version {version} not found on node {node_identifier}")
