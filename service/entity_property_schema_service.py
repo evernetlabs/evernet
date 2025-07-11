@@ -39,11 +39,22 @@ class EntityPropertySchemaService:
         }
 
     @staticmethod
-    def fetch():
-        pass
+    def fetch(node_identifier: str, entity_schema_identifier: str, entity_schema_version: str) -> list[dict]:
+        entity_property_schemas = EntityPropertySchema.select().where(
+            EntityPropertySchema.node_identifier == node_identifier,
+            EntityPropertySchema.entity_schema_identifier == entity_schema_identifier,
+            EntityPropertySchema.entity_schema_version == entity_schema_version,
+        )
+
+        result = []
+
+        for entity_property_schema in entity_property_schemas:
+            result.append(EntityPropertySchemaService.to_dict(entity_property_schema))
+
+        return result
 
     @staticmethod
-    def get():
+    def get(node_identifier: str, entity_schema_identifier: str, entity_schema_version: str, identifier: str) -> dict:
         pass
 
     @staticmethod
@@ -55,5 +66,15 @@ class EntityPropertySchemaService:
         pass
 
     @staticmethod
-    def to_dict():
-        pass
+    def to_dict(entity_property_schema: EntityPropertySchema) -> dict:
+        return {
+            "id": entity_property_schema.get_id(),
+            "identifier": entity_property_schema.identifier,
+            "node_identifier": entity_property_schema.node_identifier,
+            "entity_schema_identifier": entity_property_schema.entity_schema_identifier,
+            "entity_schema_version": entity_property_schema.entity_schema_version,
+            "display_name": entity_property_schema.display_name,
+            "description": entity_property_schema.description,
+            "json_schema": entity_property_schema.json_schema,
+            "creator": entity_property_schema.creator,
+        }

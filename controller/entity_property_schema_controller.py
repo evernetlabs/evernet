@@ -23,3 +23,11 @@ class EntityPropertySchemaController:
                 optional_param("json_schema"),
                 admin["identifier"]
             )
+
+        @self.app.get("/api/v1/nodes/<node_identifier>/entity-schemas/<entity_schema_identifier>/<entity_schema_version>/properties")
+        def fetch_entity_property_schemas(admin, node_identifier, entity_schema_identifier, entity_schema_version):
+            return EntityPropertySchemaService.fetch(
+                node_identifier,
+                entity_schema_identifier,
+                entity_schema_version,
+            )
