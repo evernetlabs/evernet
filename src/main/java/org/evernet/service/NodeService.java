@@ -2,14 +2,17 @@ package org.evernet.service;
 
 import lombok.RequiredArgsConstructor;
 import org.evernet.exception.ClientException;
+import org.evernet.exception.NotFoundException;
 import org.evernet.model.Node;
 import org.evernet.repository.NodeRepository;
 import org.evernet.request.NodeCreationRequest;
 import org.evernet.util.Ed25519KeyHelper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +38,23 @@ public class NodeService {
                 .build();
 
         return nodeRepository.save(node);
+    }
+
+    public List<Node> listAll(Pageable pageable) {
+        return nodeRepository.findAll(pageable).getContent();
+    }
+
+    public List<Node> listOpen(Pageable pageable) {
+        return nodeRepository.findByOpenIsTrue(pageable);
+    }
+
+    public Node get(String identifier) {
+        Node node = nodeRepository.findByIdentifier(identifier);
+
+        if (node == null) {
+            throw new NotFoundException("Node not found");
+        }
+
+        return node;
     }
 }

@@ -6,15 +6,14 @@ import org.evernet.auth.AuthenticatedAdminController;
 import org.evernet.model.Node;
 import org.evernet.request.NodeCreationRequest;
 import org.evernet.service.NodeService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/admins")
 @RequiredArgsConstructor
 public class NodeController extends AuthenticatedAdminController {
 
@@ -23,5 +22,15 @@ public class NodeController extends AuthenticatedAdminController {
     @PostMapping("/nodes")
     public Node create(@Valid @RequestBody NodeCreationRequest request) throws NoSuchAlgorithmException {
         return nodeService.create(request, getAdminIdentifier());
+    }
+
+    @GetMapping("/nodes")
+    public List<Node> list(Pageable pageable) {
+        return nodeService.listAll(pageable);
+    }
+
+    @GetMapping("/nodes/{identifier}")
+    public Node get(@PathVariable String identifier) {
+        return nodeService.get(identifier);
     }
 }
