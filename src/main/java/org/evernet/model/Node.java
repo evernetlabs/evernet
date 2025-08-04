@@ -1,5 +1,6 @@
 package org.evernet.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -36,6 +37,7 @@ public class Node {
 
     private Boolean open;
 
+    @JsonIgnore
     private String signingPrivateKey;
 
     private String signingPublicKey;
