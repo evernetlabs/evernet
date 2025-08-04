@@ -55,7 +55,7 @@ public class AdminService {
         }
 
         String token = jwt.getAdminToken(AuthenticatedAdmin.builder()
-                        .identifier(admin.getIdentifier())
+                .identifier(admin.getIdentifier())
                 .build());
 
         return AdminTokenResponse.builder().token(token).build();
