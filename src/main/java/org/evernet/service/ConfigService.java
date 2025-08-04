@@ -3,6 +3,7 @@ package org.evernet.service;
 import lombok.RequiredArgsConstructor;
 import org.evernet.model.Config;
 import org.evernet.repository.ConfigRepository;
+import org.evernet.util.Random;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +18,8 @@ public class ConfigService {
         List<Config> configs = List.of(
                 Config.builder().key("VERTEX_ENDPOINT").value(vertexEndpoint).build(),
                 Config.builder().key("VERTEX_DISPLAY_NAME").value(vertexDisplayName).build(),
-                Config.builder().key("VERTEX_DESCRIPTION").value(vertexDescription).build()
+                Config.builder().key("VERTEX_DESCRIPTION").value(vertexDescription).build(),
+                Config.builder().key("JWT_SIGNING_KEY").value(Random.generateRandomString(128)).build()
         );
 
         configRepository.saveAll(configs);
@@ -52,5 +54,9 @@ public class ConfigService {
 
     public String getVertexDescription() {
         return get("VERTEX_DESCRIPTION", "vertex");
+    }
+
+    public String getJwtSigningKey() {
+        return get("JWT_SIGNING_KEY", "secret.secret.secret.secret.secret.secret.secret.secret.secret.secret.secret.secret");
     }
 }
