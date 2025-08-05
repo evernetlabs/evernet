@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Data
@@ -33,5 +35,10 @@ public class NodeAddress {
         }
 
         return NodeAddress.builder().vertexEndpoint(components[0]).identifier(components[1]).build();
+    }
+
+    public boolean equals(NodeAddress another) {
+        return Objects.equals(this.vertexEndpoint, another.getVertexEndpoint()) &&
+                Objects.equals(this.identifier, another.getIdentifier());
     }
 }

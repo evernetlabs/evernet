@@ -59,4 +59,8 @@ public class ConfigService {
     public String getJwtSigningKey() {
         return get("JWT_SIGNING_KEY", "secret.secret.secret.secret.secret.secret.secret.secret.secret.secret.secret.secret");
     }
+
+    public String getFederationProtocol() {
+        return  get("FEDERATION_PROTOCOL", "http");
+    }
 }

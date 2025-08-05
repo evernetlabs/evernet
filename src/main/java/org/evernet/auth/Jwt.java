@@ -1,15 +1,21 @@
 package org.evernet.auth;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import org.evernet.bean.ActorAddress;
+import org.evernet.bean.NodeAddress;
+import org.evernet.exception.InvalidTokenException;
 import org.evernet.service.ConfigService;
+import org.evernet.service.NodeKeyService;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
+import java.security.Key;
 import java.security.PrivateKey;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -21,6 +27,7 @@ public class Jwt {
     private static final String TOKEN_TYPE_ACTOR = "ACTOR";
 
     private final ConfigService configService;
+    private final NodeKeyService nodeKeyService;
 
     public AuthenticatedAdmin getAdmin(String token) {
         String vertexEndpoint = configService.getVertexEndpoint();
@@ -50,6 +57,51 @@ public class Jwt {
                 .and()
                 .signWith(Keys.hmacShaKeyFor(configService.getJwtSigningKey().getBytes(StandardCharsets.UTF_8)))
                 .compact();
+    }
+
+    public AuthenticatedActor getActor(String token) {
+        Jws<Claims> jwsClaims = Jwts.parser()
+                .keyLocator(new LocatorAdapter<>() {
+                    @Override
+                    protected Key locate(JwsHeader header) {
+                        try {
+                            return nodeKeyService.getPublicKey(header.getKeyId());
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                })
+                .require(TOKEN_TYPE_CLAIM, TOKEN_TYPE_ACTOR)
+                .build()
+                .parseSignedClaims(token);
+
+        String kid = jwsClaims.getHeader().getKeyId();
+        if (StringUtils.isBlank(kid)) {
+            throw new InvalidTokenException();
+        }
+
+        Optional<String> audience = jwsClaims.getPayload().getAudience().stream().findFirst();
+        if (audience.isEmpty()) {
+            throw new InvalidTokenException();
+        }
+
+        String issuer = jwsClaims.getPayload().getIssuer();
+
+        if (StringUtils.isBlank(issuer)) {
+            throw new InvalidTokenException();
+        }
+
+        if (!issuer.equals(kid)) {
+            throw new InvalidTokenException();
+        }
+
+        return AuthenticatedActor.builder()
+                .address(ActorAddress.builder()
+                        .identifier(jwsClaims.getPayload().getSubject())
+                        .nodeAddress(NodeAddress.fromString(issuer))
+                        .build())
+                .targetNodeAddress(NodeAddress.fromString(audience.get()))
+                .build();
     }
 
     public String getActorToken(AuthenticatedActor actor, PrivateKey privateKey) {

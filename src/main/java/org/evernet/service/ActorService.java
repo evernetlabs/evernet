@@ -8,6 +8,7 @@ import org.evernet.bean.NodeAddress;
 import org.evernet.exception.AuthenticationException;
 import org.evernet.exception.ClientException;
 import org.evernet.exception.NotAllowedException;
+import org.evernet.exception.NotFoundException;
 import org.evernet.model.Actor;
 import org.evernet.model.Node;
 import org.evernet.repository.ActorRepository;
@@ -83,5 +84,15 @@ public class ActorService {
                 .build(), signingPrivateKey);
 
         return ActorTokenResponse.builder().token(token).build();
+    }
+
+    public Actor get(String nodeIdentifier, String identifier) {
+        Actor actor = actorRepository.findByIdentifierAndNodeIdentifier(identifier, nodeIdentifier);
+
+        if (actor == null) {
+            throw new NotFoundException(String.format("Actor %s not found on node %s", identifier, nodeIdentifier));
+        }
+
+        return actor;
     }
 }
