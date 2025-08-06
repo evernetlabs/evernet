@@ -29,6 +29,8 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    private String messageTypeIdentifier;
+
     private String data;
 
     private String transmitterNodeIdentifier;

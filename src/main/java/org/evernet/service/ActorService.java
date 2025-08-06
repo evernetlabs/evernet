@@ -163,4 +163,8 @@ public class ActorService {
         actor = actorRepository.save(actor);
         return ActorPasswordResponse.builder().actor(actor).password(password).build();
     }
+
+    public Boolean exists(String nodeIdentifier, String identifier) {
+        return actorRepository.existsByIdentifierAndNodeIdentifier(identifier, nodeIdentifier);
+    }
 }
