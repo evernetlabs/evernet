@@ -1,6 +1,5 @@
 package org.evernet.service;
 
-import io.micrometer.common.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import org.evernet.exception.ClientException;
 import org.evernet.exception.NotAllowedException;
@@ -10,6 +9,7 @@ import org.evernet.model.Transmitter;
 import org.evernet.repository.TransmitterRepository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class TransmitterService {
     public Transmitter create(String nodeIdentifier, String actorAddress, String creator) {
         Node node = nodeService.get(nodeIdentifier);
 
-        if (StringUtils.isBlank(creator)) {
+        if (!StringUtils.hasText(creator)) {
             if (!node.getOpen()) {
                 throw new NotAllowedException();
             }

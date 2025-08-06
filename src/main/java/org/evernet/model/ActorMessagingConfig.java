@@ -21,7 +21,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
 @Entity
-@Table(name = "actor_message_configs")
+@Table(name = "actor_messaging_configs")
 public class ActorMessagingConfig {
 
     @Id
