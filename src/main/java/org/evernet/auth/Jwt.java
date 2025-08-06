@@ -95,12 +95,18 @@ public class Jwt {
             throw new InvalidTokenException();
         }
 
+        NodeAddress targetNodeAddress = NodeAddress.fromString(audience.get());
+
+        if (!targetNodeAddress.getVertexEndpoint().equals(configService.getVertexEndpoint())) {
+            throw new InvalidTokenException();
+        }
+
         return AuthenticatedActor.builder()
                 .address(ActorAddress.builder()
                         .identifier(jwsClaims.getPayload().getSubject())
                         .nodeAddress(NodeAddress.fromString(issuer))
                         .build())
-                .targetNodeAddress(NodeAddress.fromString(audience.get()))
+                .targetNodeAddress(targetNodeAddress)
                 .build();
     }
 

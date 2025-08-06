@@ -9,6 +9,10 @@ public class AuthenticatedActorController {
         return ThreadLocalWrapper.getActor();
     }
 
+    public String getTargetNodeIdentifier() {
+        return getActor().getTargetNodeAddress().getIdentifier();
+    }
+
     public String getActorIdentifier() {
         return getActor().getAddress().getIdentifier();
     }

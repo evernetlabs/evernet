@@ -128,6 +128,10 @@ public class ActorService {
     }
 
     public ActorPasswordResponse add(String nodeIdentifier, ActorAdditionRequest request, String creator) {
+        if (!nodeService.exists(nodeIdentifier)) {
+            throw new NotFoundException(String.format("Node %s does not exists", nodeIdentifier));
+        }
+
         if (actorRepository.existsByIdentifierAndNodeIdentifier(request.getIdentifier(), nodeIdentifier)) {
             throw new ClientException(String.format("Actor %s already exists on node %s", request.getIdentifier(), nodeIdentifier));
         }

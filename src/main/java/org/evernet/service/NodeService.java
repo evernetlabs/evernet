@@ -87,4 +87,8 @@ public class NodeService {
         node.setSigningPublicKey(Ed25519KeyHelper.publicKeyToString(keyPair.getPublic()));
         return nodeRepository.save(node);
     }
+
+    public Boolean exists(String identifier) {
+        return nodeRepository.existsByIdentifier(identifier);
+    }
 }
