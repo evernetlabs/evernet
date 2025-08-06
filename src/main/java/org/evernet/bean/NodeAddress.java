@@ -2,12 +2,7 @@ package org.evernet.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Objects;
+import lombok.*;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -17,6 +12,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
+@EqualsAndHashCode
 public class NodeAddress {
 
     private String identifier;
@@ -35,10 +31,5 @@ public class NodeAddress {
         }
 
         return NodeAddress.builder().vertexEndpoint(components[0]).identifier(components[1]).build();
-    }
-
-    public boolean equals(NodeAddress another) {
-        return Objects.equals(this.vertexEndpoint, another.getVertexEndpoint()) &&
-                Objects.equals(this.identifier, another.getIdentifier());
     }
 }
