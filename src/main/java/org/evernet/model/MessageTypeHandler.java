@@ -40,6 +40,8 @@ public class MessageTypeHandler {
 
     private String handlerAddress;
 
+    private String creator;
+
     @CreationTimestamp
     private Instant createdAt;
 
