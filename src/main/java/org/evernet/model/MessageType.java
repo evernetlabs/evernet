@@ -30,15 +30,13 @@ public class MessageType {
 
     private String nodeIdentifier;
 
-    private String identifier;
+    private String address;
 
     private String displayName;
 
     private String description;
 
     private String jsonSchema;
-
-    private String sourceAddress;
 
     private String creator;
 

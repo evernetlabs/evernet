@@ -28,7 +28,7 @@ public class MessageTypeHandler {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String messageTypeIdentifier;
+    private String messageTypeAddress;
 
     private Location location;
 
@@ -48,8 +48,9 @@ public class MessageTypeHandler {
 
     public enum HandlerType {
         PUSH,
+        STORAGE_CALL,
         FUNCTION_CALL,
-        STORAGE_CALL
+        WORKFLOW_CALL,
     }
 
     public enum Location {
