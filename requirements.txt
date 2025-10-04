@@ -1,0 +1,7 @@
+flask
+PyJWT
+bcrypt
+python-dotenv
+cryptography
+requests
+plyvel
