@@ -4,6 +4,9 @@ import plyvel
 from dotenv import *
 from flask import Flask, request, jsonify, g
 
+from vertex.config.admin.admin_api import AdminApi
+from vertex.config.admin.admin_manager import AdminManager
+from vertex.config.config_manager import ConfigManager
 from vertex.health.health_api import HealthApi
 
 load_dotenv()
@@ -16,12 +19,17 @@ if not os.path.exists(data_path):
 print("initializing database...")
 if not os.environ.get("WERKZEUG_RUN_MAIN"):
     print("Skipping DB init in reloader process")
+    db = None
 else:
     db = plyvel.DB(f'{data_path}/evernet.db', create_if_missing=True)
 
 app = Flask(__name__)
 
+config_manager = ConfigManager(db)
+admin_manager = AdminManager(db, config_manager)
+
 HealthApi(app).register()
+AdminApi(app, admin_manager).register()
 
 
 @app.before_request
