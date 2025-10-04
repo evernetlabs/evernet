@@ -4,8 +4,8 @@ import plyvel
 from dotenv import *
 from flask import Flask, request, jsonify, g
 
-from vertex.config.admin.admin_api import AdminApi
-from vertex.config.admin.admin_manager import AdminManager
+from vertex.admin.admin_api import AdminApi
+from vertex.admin.admin_manager import AdminManager
 from vertex.config.config_manager import ConfigManager
 from vertex.health.health_api import HealthApi
 
@@ -35,6 +35,7 @@ AdminApi(app, admin_manager).register()
 @app.before_request
 def before_request():
     g.request_body = request.get_json(force=True, silent=True)
+    g.config_manager = config_manager
 
 
 @app.errorhandler(404)

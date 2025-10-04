@@ -68,3 +68,18 @@ class AdminManager:
         return {
             'token': token
         }
+
+    def get(self, identifier: str) -> dict:
+        admin_json = self.db.get(f'admin:{identifier}'.encode('utf-8'))
+
+        if not admin_json:
+            raise Exception(f"Admin {identifier} not found")
+
+        admin = json.loads(admin_json)
+
+        return {
+            "identifier": admin["identifier"],
+            "creator": admin["creator"],
+            "created_at": admin["created_at"],
+            "updated_at": admin["updated_at"],
+        }

@@ -1,7 +1,8 @@
 import flask
 
 from utils.api_utils import required_param
-from vertex.config.admin.admin_manager import AdminManager
+from utils.auth_utils import authenticate_admin
+from vertex.admin.admin_manager import AdminManager
 
 
 class AdminApi:
@@ -27,3 +28,8 @@ class AdminApi:
                 required_param('identifier'),
                 required_param('password')
             )
+
+        @self.app.get('/api/v1/admins/current')
+        @authenticate_admin
+        def get_current_admin_api(admin):
+            return self.admin_manager.get(admin["identifier"])
