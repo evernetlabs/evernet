@@ -1,6 +1,9 @@
 import json
+import time
+import uuid
 
 import bcrypt
+import jwt
 import plyvel
 
 from utils.time_utils import now
@@ -37,4 +40,31 @@ class AdminManager:
 
         return {
             "identifier": identifier,
+        }
+
+    def get_token(self, identifier: str, password: str) -> dict:
+        admin_json = self.db.get(f'admin:{identifier}'.encode('utf-8'))
+        if not admin_json:
+            raise Exception("Invalid identifier and password combination")
+
+        admin = json.loads(admin_json)
+
+        if not bcrypt.checkpw(password.encode('utf-8'), admin["password"].encode('utf-8')):
+            raise Exception("Invalid identifier and password combination")
+
+        jwt_signing_key = self.config_manager.get_jwt_signing_key()
+        vertex_endpoint = self.config_manager.get_vertex_endpoint()
+
+        token = jwt.encode({
+            'sub': admin["identifier"],
+            'iss': vertex_endpoint,
+            'aud': vertex_endpoint,
+            'iat': int(time.time()),
+            'exp': int(time.time()) + 60 * 60 * 24,
+            'type': 'admin',
+            'jti': str(uuid.uuid4()),
+        }, algorithm='HS256', key=jwt_signing_key)
+
+        return {
+            'token': token
         }
