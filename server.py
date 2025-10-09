@@ -5,6 +5,9 @@ import pymongo
 from dotenv import *
 from flask import Flask, request, jsonify, g
 
+from admin.admin_api import AdminAPI
+from admin.admin_service import AdminService
+from config.config_service import ConfigService
 from health.health_api import HealthAPI
 
 app = Flask(__name__)
@@ -13,7 +16,11 @@ load_dotenv()
 jwt_signing_key = os.getenv("JWT_SIGNING_KEY")
 db = pymongo.MongoClient(os.getenv("DB_HOST"), int(os.getenv("DB_PORT"))).evernet
 
+config_service = ConfigService(db.configs)
+admin_service = AdminService(db.admins, config_service)
+
 HealthAPI(app).register()
+AdminAPI(app, admin_service).register()
 
 
 @app.before_request
