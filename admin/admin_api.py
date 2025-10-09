@@ -64,3 +64,8 @@ class AdminAPI:
         @authenticate_admin
         def reset_admin_password(_, identifier):
             return self.admin_service.reset_password(identifier)
+
+        @self.app.delete('/api/v1/admins/<identifier>')
+        @authenticate_admin
+        def delete_admin(_, identifier):
+            return self.admin_service.delete(identifier)
