@@ -26,6 +26,7 @@ AdminAPI(app, admin_service).register()
 @app.before_request
 def before_request():
     g.request_body = request.get_json(force=True, silent=True)
+    g.config_service = config_service
 
 
 @app.errorhandler(404)
