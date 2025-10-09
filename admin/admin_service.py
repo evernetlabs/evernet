@@ -6,6 +6,7 @@ import jwt
 from pymongo.collection import Collection
 
 from config.config_service import ConfigService
+from utils.secret_utils import generate_secret
 from utils.time_utils import current_datetime
 
 
@@ -81,6 +82,27 @@ class AdminService:
 
         return {
             'identifier': identifier,
+        }
+
+    def add(self, identifier: str, creator: str) -> dict:
+        if self.mongo.count_documents({
+            'identifier': identifier
+        }) > 0:
+            raise Exception(f'Admin {identifier} already exists')
+
+        password = generate_secret(16)
+
+        self.mongo.insert_one({
+            "identifier": identifier,
+            "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+            "creator": creator,
+            "created_at": current_datetime(),
+            "updated_at": current_datetime(),
+        })
+
+        return {
+            'identifier': identifier,
+            'password': password,
         }
 
     @staticmethod
