@@ -30,3 +30,12 @@ class NodeAPI:
         @self.app.get('/api/v1/nodes')
         def fetch_open_nodes():
             return self.node_service.fetch_open(pagination_page(), pagination_size())
+
+        @self.app.get('/api/v1/admins/nodes/<identifier>')
+        @authenticate_admin
+        def get_node_by_admin(_, identifier):
+            return self.node_service.get(identifier)
+
+        @self.app.get('/api/v1/nodes/<identifier>')
+        def get_node(identifier):
+            return self.node_service.get(identifier)
