@@ -51,5 +51,11 @@ class AdminAPI:
 
         @self.app.get('/api/v1/admins')
         @authenticate_admin
-        def fetch_admins(admin):
+        def fetch_admins(_):
             return self.admin_service.fetch(pagination_page(), pagination_size())
+
+
+        @self.app.get('/api/v1/admins/<identifier>')
+        @authenticate_admin
+        def get_admin(_, identifier):
+            return self.admin_service.get(identifier)
