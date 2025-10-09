@@ -25,11 +25,11 @@ def optional_param(key: str, data_type=str):
     return val
 
 
-def page():
+def pagination_page():
     return request.args.get("page", 0, int)
 
 
-def size():
+def pagination_size():
     return request.args.get("size", 50, int)
 
 

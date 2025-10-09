@@ -105,6 +105,16 @@ class AdminService:
             'password': password,
         }
 
+    def fetch(self, page: int = 0, size: int = 50) -> list[dict]:
+        admins = self.mongo.find({}).skip(page * size).limit(size)
+
+        result = []
+
+        for admin in admins:
+            result.append(self.to_dict(admin))
+
+        return result
+
     @staticmethod
     def to_dict(self):
         return {

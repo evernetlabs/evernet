@@ -1,7 +1,7 @@
 import flask
 
 from admin.admin_service import AdminService
-from utils.api_utils import required_param, authenticate_admin
+from utils.api_utils import required_param, authenticate_admin, pagination_size, pagination_page
 
 
 class AdminAPI:
@@ -48,3 +48,8 @@ class AdminAPI:
                 required_param('identifier'),
                 admin['identifier'],
             )
+
+        @self.app.get('/api/v1/admins')
+        @authenticate_admin
+        def fetch_admins(admin):
+            return self.admin_service.fetch(pagination_page(), pagination_size())
