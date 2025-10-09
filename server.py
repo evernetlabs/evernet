@@ -9,6 +9,8 @@ from admin.admin_api import AdminAPI
 from admin.admin_service import AdminService
 from config.config_service import ConfigService
 from health.health_api import HealthAPI
+from vertex.vertex_api import VertexAPI
+from vertex.vertex_service import VertexService
 
 app = Flask(__name__)
 load_dotenv()
@@ -17,9 +19,11 @@ jwt_signing_key = os.getenv("JWT_SIGNING_KEY")
 db = pymongo.MongoClient(os.getenv("DB_HOST"), int(os.getenv("DB_PORT"))).evernet
 
 config_service = ConfigService(db.configs)
+vertex_service = VertexService(config_service)
 admin_service = AdminService(db.admins, config_service)
 
 HealthAPI(app).register()
+VertexAPI(app, vertex_service).register()
 AdminAPI(app, admin_service).register()
 
 
