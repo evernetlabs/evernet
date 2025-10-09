@@ -9,6 +9,8 @@ from admin.admin_api import AdminAPI
 from admin.admin_service import AdminService
 from config.config_service import ConfigService
 from health.health_api import HealthAPI
+from node.node_api import NodeAPI
+from node.node_service import NodeService
 from vertex.vertex_api import VertexAPI
 from vertex.vertex_service import VertexService
 
@@ -21,10 +23,12 @@ db = pymongo.MongoClient(os.getenv("DB_HOST"), int(os.getenv("DB_PORT"))).everne
 config_service = ConfigService(db.configs)
 vertex_service = VertexService(config_service)
 admin_service = AdminService(db.admins, config_service)
+node_service = NodeService(db.nodes)
 
 HealthAPI(app).register()
 VertexAPI(app, vertex_service).register()
 AdminAPI(app, admin_service).register()
+NodeAPI(app, node_service).register()
 
 
 @app.before_request
