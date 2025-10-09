@@ -42,8 +42,17 @@ class NodeService:
 
         return result
 
-    def fetch_open(self):
-        pass
+    def fetch_open(self, page: int = 0, size: int = 50) -> list[dict]:
+        nodes = self.mongo.find({
+            'open': True,
+        }).skip(page * size).limit(size)
+
+        result = []
+
+        for node in nodes:
+            result.append(self.to_dict(node))
+
+        return result
 
     def get(self):
         pass
