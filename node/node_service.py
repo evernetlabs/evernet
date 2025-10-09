@@ -32,8 +32,15 @@ class NodeService:
             'identifier': identifier
         }
 
-    def fetch(self):
-        pass
+    def fetch(self, page: int = 0, size: int = 50) -> list[dict]:
+        nodes = self.mongo.find({}).skip(page * size).limit(size)
+
+        result = []
+
+        for node in nodes:
+            result.append(self.to_dict(node))
+
+        return result
 
     def fetch_open(self):
         pass
@@ -53,5 +60,16 @@ class NodeService:
     def delete(self):
         pass
 
+    @staticmethod
     def to_dict(self):
-        pass
+        return {
+            'id': str(self.get('_id')),
+            'identifier': self.get('identifier'),
+            'display_name': self.get('display_name'),
+            'description': self.get('description'),
+            'open': self.get('open'),
+            'signing_public_key': self.get('signing_public_key'),
+            'creator': self.get('creator'),
+            'created_at': self.get('created_at'),
+            'updated_at': self.get('updated_at'),
+        }
