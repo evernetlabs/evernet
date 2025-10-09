@@ -115,6 +115,15 @@ class AdminService:
 
         return result
 
+    def reset_password(self, identifier: str) -> dict:
+        password = generate_secret(16)
+        result = self.change_password(identifier, password)
+        result["password"] = password
+        return result
+
+    def delete(self):
+        pass
+
     @staticmethod
     def to_dict(self):
         return {
