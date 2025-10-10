@@ -64,16 +64,70 @@ class NodeService:
 
         return self.to_dict(node)
 
-    def update(self):
-        pass
+    def update(self, identifier: str, display_name: str, description: str) -> dict:
+        fields = {
+            'updated_at': current_datetime(),
+            'description': description,
+        }
 
-    def update_open(self):
-        pass
+        if display_name:
+            fields['display_name'] = display_name
 
-    def reset_signing_keys(self):
-        pass
+        result = self.mongo.update_one({
+            'identifier': identifier,
+        }, {
+            '$set': fields
+        })
 
-    def delete(self):
+        if result.matched_count == 0:
+            raise Exception(f'Node {identifier} not found')
+
+        return {
+            'identifier': identifier,
+        }
+
+    def update_open(self, identifier: str, open: bool) -> dict:
+        fields = {
+            'open': open,
+            'updated_at': current_datetime(),
+        }
+
+        result = self.mongo.update_one({
+            'identifier': identifier,
+        }, {
+            '$set': fields
+        })
+
+        if result.matched_count == 0:
+            raise Exception(f'Node {identifier} not found')
+
+        return {
+            'identifier': identifier,
+        }
+
+    def reset_signing_keys(self, identifier: str) -> dict:
+        signing_private_key, signing_public_key = generate_ed25519_keys()
+
+        fields = {
+            'updated_at': current_datetime(),
+            'signing_private_key': private_key_to_string(signing_private_key),
+            'signing_public_key': public_key_to_string(signing_public_key),
+        }
+
+        result = self.mongo.update_one({
+            'identifier': identifier,
+        }, {
+            '$set': fields
+        })
+
+        if result.matched_count == 0:
+            raise Exception(f'Node {identifier} not found')
+
+        return {
+            'identifier': identifier,
+        }
+
+    def delete(self, identifier: str) -> dict:
         pass
 
     @staticmethod

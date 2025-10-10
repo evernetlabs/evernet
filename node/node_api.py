@@ -39,3 +39,25 @@ class NodeAPI:
         @self.app.get('/api/v1/nodes/<identifier>')
         def get_node(identifier):
             return self.node_service.get(identifier)
+
+        @self.app.put('/api/v1/admins/nodes/<identifier>')
+        @authenticate_admin
+        def update_node(_, identifier):
+            return self.node_service.update(
+                identifier,
+                optional_param("display_name"),
+                optional_param("description"),
+            )
+
+        @self.app.put('/api/v1/admins/nodes/<identifier>/open')
+        @authenticate_admin
+        def update_node_open_flag(_, identifier):
+            return self.node_service.update_open(
+                identifier,
+                required_param("open", bool),
+            )
+
+        @self.app.put('/api/v1/admins/nodes/<identifier>/signing-keys')
+        @authenticate_admin
+        def reset_node_signing_keys(_, identifier):
+            return self.node_service.reset_signing_keys(identifier)
