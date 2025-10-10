@@ -63,3 +63,6 @@ class ConfigService:
 
     def get_vertex_description(self):
         return self.get("vertex_description", "Vertex")
+
+    def get_federation_protocol(self):
+        return self.get("federation_protocol", "http")

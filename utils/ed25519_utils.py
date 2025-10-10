@@ -3,7 +3,7 @@ from cryptography.hazmat.primitives.asymmetric import ed25519
 import base64
 
 
-def generate_ed25519_keys() -> (ed25519.Ed25519PrivateKey, ed25519.Ed25519PublicKey):
+def generate_ed25519_keys() -> tuple[ed25519.Ed25519PrivateKey, ed25519.Ed25519PublicKey]:
     private_key = ed25519.Ed25519PrivateKey.generate()
     public_key = private_key.public_key()
     return private_key, public_key

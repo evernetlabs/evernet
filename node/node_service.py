@@ -64,6 +64,18 @@ class NodeService:
 
         return self.to_dict(node)
 
+    def get_signing_private_key(self, identifier: str) -> dict:
+        node = self.mongo.find_one({
+            'identifier': identifier
+        })
+
+        if not node:
+            raise Exception(f'Node {identifier} not found')
+
+        return {
+            'signing_private_key': node.get('signing_private_key'),
+        }
+
     def update(self, identifier: str, display_name: str, description: str) -> dict:
         fields = {
             'updated_at': current_datetime(),
@@ -138,6 +150,11 @@ class NodeService:
         return {
             'identifier': identifier,
         }
+
+    def exists(self, identifier: str) -> bool:
+        return self.mongo.count_documents({
+            'identifier': identifier
+        }) > 0
 
     @staticmethod
     def to_dict(self):
