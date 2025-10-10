@@ -61,3 +61,8 @@ class NodeAPI:
         @authenticate_admin
         def reset_node_signing_keys(_, identifier):
             return self.node_service.reset_signing_keys(identifier)
+
+        @self.app.delete('/api/v1/admins/nodes/<identifier>')
+        @authenticate_admin
+        def delete_node(_, identifier):
+            return self.node_service.delete(identifier)

@@ -128,7 +128,16 @@ class NodeService:
         }
 
     def delete(self, identifier: str) -> dict:
-        pass
+        result = self.mongo.delete_one({
+            'identifier': identifier
+        })
+
+        if result.deleted_count == 0:
+            raise Exception(f'Node {identifier} not found')
+
+        return {
+            'identifier': identifier,
+        }
 
     @staticmethod
     def to_dict(self):
