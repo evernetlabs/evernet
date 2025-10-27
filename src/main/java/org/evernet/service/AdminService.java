@@ -16,7 +16,10 @@ import org.evernet.response.AdminPasswordResponse;
 import org.evernet.response.AdminTokenResponse;
 import org.evernet.util.Password;
 import org.evernet.util.Random;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -89,5 +92,9 @@ public class AdminService {
         admin = adminRepository.save(admin);
 
         return AdminPasswordResponse.builder().admin(admin).password(password).build();
+    }
+
+    public List<Admin> list(Pageable pageable) {
+        return adminRepository.findAll(pageable).getContent();
     }
 }
