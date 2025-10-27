@@ -8,6 +8,7 @@ import org.evernet.exception.NotFoundException;
 import org.evernet.model.Admin;
 import org.evernet.repository.AdminRepository;
 import org.evernet.request.AdminInitRequest;
+import org.evernet.request.AdminPasswordChangeRequest;
 import org.evernet.request.AdminTokenRequest;
 import org.evernet.response.AdminTokenResponse;
 import org.evernet.util.Password;
@@ -60,5 +61,11 @@ public class AdminService {
         }
 
         return admin;
+    }
+
+    public Admin changePassword(String identifier, AdminPasswordChangeRequest request) {
+        Admin admin = get(identifier);
+        admin.setPassword(Password.hash(request.getPassword()));
+        return adminRepository.save(admin);
     }
 }
