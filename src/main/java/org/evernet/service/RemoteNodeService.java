@@ -14,7 +14,7 @@ public class RemoteNodeService {
     private final ConfigService configService;
 
     public Node get(String vertexEndpoint, String nodeIdentifier) {
-        return restTemplate.getForObject(String.format("%s://%s/api/v1/nodes/%s",
+        return restTemplate.getForObject(String.format("%s://%s/api/v1/public/nodes/%s",
                 configService.getFederationProtocol(),
                 vertexEndpoint,
                 nodeIdentifier), Node.class);

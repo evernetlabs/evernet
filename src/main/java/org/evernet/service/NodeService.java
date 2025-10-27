@@ -6,9 +6,12 @@ import org.evernet.exception.NotFoundException;
 import org.evernet.model.Node;
 import org.evernet.repository.NodeRepository;
 import org.evernet.request.NodeCreationRequest;
+import org.evernet.request.NodeOpenUpdateRequest;
+import org.evernet.request.NodeUpdateRequest;
 import org.evernet.util.Ed25519KeyHelper;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -59,5 +62,39 @@ public class NodeService {
         }
 
         return node;
+    }
+
+    public Node update(String identifier, NodeUpdateRequest request) {
+        Node node = get(identifier);
+
+        if (StringUtils.hasText(request.getDisplayName())) {
+            node.setDisplayName(request.getDisplayName());
+        }
+
+        node.setDescription(request.getDescription());
+
+        return nodeRepository.save(node);
+    }
+
+    public Node delete(String identifier) {
+        Node node = get(identifier);
+        nodeRepository.delete(node);
+        return node;
+    }
+
+    public Node resetSigningKeys(String identifier) throws NoSuchAlgorithmException {
+        Node node = get(identifier);
+        KeyPair keyPair = Ed25519KeyHelper.generateKeyPair();
+        String signingPrivateKey = Ed25519KeyHelper.privateKeyToString(keyPair.getPrivate());
+        String signingPublicKey = Ed25519KeyHelper.publicKeyToString(keyPair.getPublic());
+        node.setSigningPrivateKey(signingPrivateKey);
+        node.setSigningPublicKey(signingPublicKey);
+        return nodeRepository.save(node);
+    }
+
+    public Node updateOpen(String identifier, NodeOpenUpdateRequest request) {
+        Node node = get(identifier);
+        node.setOpen(request.getOpen());
+        return nodeRepository.save(node);
     }
 }
