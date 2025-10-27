@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS node
     description         TEXT,
     signing_private_key TEXT,
     signing_public_key  TEXT,
+    open                BOOLEAN,
     creator             TEXT,
     created_at          DATE,
     updated_at          DATE,
