@@ -3,15 +3,19 @@ package org.evernet.service;
 import lombok.RequiredArgsConstructor;
 import org.evernet.auth.AuthenticatedAdmin;
 import org.evernet.auth.Jwt;
+import org.evernet.exception.ClientException;
 import org.evernet.exception.NotAllowedException;
 import org.evernet.exception.NotFoundException;
 import org.evernet.model.Admin;
 import org.evernet.repository.AdminRepository;
+import org.evernet.request.AdminAdditionRequest;
 import org.evernet.request.AdminInitRequest;
 import org.evernet.request.AdminPasswordChangeRequest;
 import org.evernet.request.AdminTokenRequest;
+import org.evernet.response.AdminPasswordResponse;
 import org.evernet.response.AdminTokenResponse;
 import org.evernet.util.Password;
+import org.evernet.util.Random;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -67,5 +71,23 @@ public class AdminService {
         Admin admin = get(identifier);
         admin.setPassword(Password.hash(request.getPassword()));
         return adminRepository.save(admin);
+    }
+
+    public AdminPasswordResponse add(AdminAdditionRequest request, String creator) {
+        String password = Random.generateRandomString(16);
+
+        if (adminRepository.existsByIdentifier(request.getIdentifier())) {
+            throw new ClientException(String.format("Admin %s already exists", request.getIdentifier()));
+        }
+
+        Admin admin = Admin.builder()
+                .identifier(request.getIdentifier())
+                .password(Password.hash(password))
+                .creator(creator)
+                .build();
+
+        admin = adminRepository.save(admin);
+
+        return AdminPasswordResponse.builder().admin(admin).password(password).build();
     }
 }

@@ -4,7 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.evernet.auth.AuthenticatedAdminController;
 import org.evernet.model.Admin;
+import org.evernet.request.AdminAdditionRequest;
 import org.evernet.request.AdminPasswordChangeRequest;
+import org.evernet.response.AdminPasswordResponse;
 import org.evernet.service.AdminService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,5 +25,10 @@ public class AdminController extends AuthenticatedAdminController {
     @PutMapping("/admins/current/password")
     public Admin changePassword(@Valid @RequestBody AdminPasswordChangeRequest request) {
         return adminService.changePassword(getAdminIdentifier(), request);
+    }
+
+    @PostMapping("/admins")
+    public AdminPasswordResponse add(@Valid @RequestBody AdminAdditionRequest request) {
+        return adminService.add(request, getAdminIdentifier());
     }
 }
