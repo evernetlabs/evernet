@@ -97,4 +97,12 @@ public class AdminService {
     public List<Admin> list(Pageable pageable) {
         return adminRepository.findAll(pageable).getContent();
     }
+
+    public AdminPasswordResponse resetPassword(String identifier) {
+        Admin admin = get(identifier);
+        String password = Random.generateRandomString(16);
+        admin.setPassword(Password.hash(password));
+        admin = adminRepository.save(admin);
+        return AdminPasswordResponse.builder().admin(admin).password(password).build();
+    }
 }

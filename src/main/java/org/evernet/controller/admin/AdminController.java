@@ -44,4 +44,9 @@ public class AdminController extends AuthenticatedAdminController {
     public Admin get(@PathVariable String identifier) {
         return adminService.get(identifier);
     }
+
+    @PutMapping("/admins/{identifier}/password")
+    public AdminPasswordResponse resetPassword(@PathVariable String identifier) {
+        return adminService.resetPassword(identifier);
+    }
 }
