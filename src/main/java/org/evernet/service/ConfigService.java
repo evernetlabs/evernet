@@ -20,12 +20,14 @@ public class ConfigService {
     private static final String VERTEX_ENDPOINT = "vertexEndpoint";
     private static final String VERTEX_DISPLAY_NAME = "vertexDisplayName";
     private static final String VERTEX_DESCRIPTION = "vertexDescription";
+    private static final String FEDERATION_PROTOCOL = "federationProtocol";
 
     public void init(Vertex vertex) {
         insert(VERTEX_ENDPOINT, vertex.getEndpoint());
         insert(VERTEX_DISPLAY_NAME, vertex.getDisplayName());
         insert(VERTEX_DESCRIPTION, vertex.getDescription());
         insert(JWT_SIGNING_KEY, Random.generateRandomString(128));
+        insert(FEDERATION_PROTOCOL, "http");
     }
 
     public void insert(String key, String value) {
@@ -60,5 +62,9 @@ public class ConfigService {
 
     public String getVertexDescription() {
         return get(VERTEX_DESCRIPTION).getValue();
+    }
+
+    public String getFederationProtocol() {
+        return get(FEDERATION_PROTOCOL).getValue();
     }
 }

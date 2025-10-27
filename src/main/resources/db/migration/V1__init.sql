@@ -4,8 +4,8 @@ CREATE TABLE IF NOT EXISTS admin
     identifier TEXT,
     password   TEXT,
     creator    TEXT,
-    created_at TEXT DEFAULT (datetime('now')),
-    updated_at TEXT DEFAULT (datetime('now')),
+    created_at DATE,
+    updated_at DATE,
     UNIQUE (identifier)
 );
 
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS config
     id         TEXT PRIMARY KEY NOT NULL,
     key        TEXT,
     value      TEXT,
-    created_at TEXT DEFAULT (datetime('now')),
-    updated_at TEXT DEFAULT (datetime('now')),
+    created_at DATE,
+    updated_at DATE,
     UNIQUE (key)
 );
 
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS node
     signing_private_key TEXT,
     signing_public_key  TEXT,
     creator             TEXT,
-    created_at          TEXT DEFAULT (datetime('now')),
-    updated_at          TEXT DEFAULT (datetime('now')),
+    created_at          DATE,
+    updated_at          DATE,
     UNIQUE (identifier)
 );
