@@ -39,4 +39,9 @@ public class AdminController extends AuthenticatedAdminController {
     public List<Admin> list(Pageable pageable) {
         return adminService.list(pageable);
     }
+
+    @GetMapping("/admins/{identifier}")
+    public Admin get(@PathVariable String identifier) {
+        return adminService.get(identifier);
+    }
 }
