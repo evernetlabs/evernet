@@ -17,4 +17,11 @@ public class VertexService {
                 .description(configService.getVertexDescription())
                 .build();
     }
+
+    public Vertex set(Vertex vertex) {
+        configService.setVertexEndpoint(vertex.getEndpoint());
+        configService.setVertexDisplayName(vertex.getDisplayName());
+        configService.setVertexDescription(vertex.getDescription());
+        return vertex;
+    }
 }

@@ -52,19 +52,39 @@ public class ConfigService {
         return get(JWT_SIGNING_KEY).getValue();
     }
 
+    public void setJwtSigningKey() {
+        set(JWT_SIGNING_KEY, Random.generateRandomString(128));
+    }
+
     public String getVertexEndpoint() {
         return get(VERTEX_ENDPOINT).getValue();
+    }
+
+    public void setVertexEndpoint(String endpoint) {
+        set(VERTEX_ENDPOINT, endpoint);
     }
 
     public String getVertexDisplayName() {
         return get(VERTEX_DISPLAY_NAME).getValue();
     }
 
+    public void setVertexDisplayName(String displayName) {
+        set(VERTEX_DISPLAY_NAME, displayName);
+    }
+
     public String getVertexDescription() {
         return get(VERTEX_DESCRIPTION).getValue();
     }
 
+    public void setVertexDescription(String description) {
+        set(VERTEX_DESCRIPTION, description);
+    }
+
     public String getFederationProtocol() {
         return get(FEDERATION_PROTOCOL).getValue();
+    }
+
+    public void setFederationProtocol(String protocol) {
+        set(FEDERATION_PROTOCOL, protocol);
     }
 }

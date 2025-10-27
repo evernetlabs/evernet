@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-public class VertexController {
+public class VertexOpenController {
 
     private final VertexService vertexService;
 
