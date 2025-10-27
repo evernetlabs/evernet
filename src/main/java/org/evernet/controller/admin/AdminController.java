@@ -49,4 +49,9 @@ public class AdminController extends AuthenticatedAdminController {
     public AdminPasswordResponse resetPassword(@PathVariable String identifier) {
         return adminService.resetPassword(identifier);
     }
+
+    @DeleteMapping("/admins/{identifier}")
+    public Admin delete(@PathVariable String identifier) {
+        return adminService.delete(identifier);
+    }
 }

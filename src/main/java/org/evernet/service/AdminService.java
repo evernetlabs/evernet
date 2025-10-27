@@ -105,4 +105,10 @@ public class AdminService {
         admin = adminRepository.save(admin);
         return AdminPasswordResponse.builder().admin(admin).password(password).build();
     }
+
+    public Admin delete(String identifier) {
+        Admin admin = get(identifier);
+        adminRepository.delete(admin);
+        return admin;
+    }
 }
