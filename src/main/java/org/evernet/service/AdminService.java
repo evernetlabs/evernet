@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.evernet.auth.AuthenticatedAdmin;
 import org.evernet.auth.Jwt;
 import org.evernet.exception.NotAllowedException;
+import org.evernet.exception.NotFoundException;
 import org.evernet.model.Admin;
 import org.evernet.repository.AdminRepository;
 import org.evernet.request.AdminInitRequest;
@@ -49,5 +50,15 @@ public class AdminService {
                 .build());
 
         return AdminTokenResponse.builder().token(token).build();
+    }
+
+    public Admin get(String identifier) {
+        Admin admin = adminRepository.findByIdentifier(identifier);
+
+        if (admin == null) {
+            throw new NotFoundException(String.format("Admin %s not found", identifier));
+        }
+
+        return admin;
     }
 }
