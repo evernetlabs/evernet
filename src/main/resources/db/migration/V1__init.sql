@@ -33,3 +33,18 @@ CREATE TABLE IF NOT EXISTS node
     updated_at          DATE,
     UNIQUE (identifier)
 );
+
+CREATE TABLE actor
+(
+    id              TEXT PRIMARY KEY NOT NULL,
+    node_identifier TEXT,
+    identifier      TEXT,
+    password        TEXT,
+    type            TEXT,
+    display_name    TEXT,
+    description     TEXT,
+    creator         TEXT,
+    created_at      DATE,
+    updated_at      DATE,
+    UNIQUE (node_identifier, identifier)
+);
