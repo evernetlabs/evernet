@@ -8,11 +8,14 @@ import org.evernet.bean.NodeAddress;
 import org.evernet.exception.AuthenticationException;
 import org.evernet.exception.ClientException;
 import org.evernet.exception.NotAllowedException;
+import org.evernet.exception.NotFoundException;
 import org.evernet.model.Actor;
 import org.evernet.model.Node;
 import org.evernet.repository.ActorRepository;
+import org.evernet.request.ActorPasswordChangeRequest;
 import org.evernet.request.ActorSignUpRequest;
 import org.evernet.request.ActorTokenRequest;
+import org.evernet.request.ActorUpdateRequest;
 import org.evernet.response.ActorTokenResponse;
 import org.evernet.util.Ed25519KeyHelper;
 import org.evernet.util.Password;
@@ -84,5 +87,45 @@ public class ActorService {
                 Ed25519KeyHelper.stringToPrivateKey(node.getSigningPrivateKey()));
 
         return ActorTokenResponse.builder().token(token).build();
+    }
+
+    public Actor get(String identifier, String nodeIdentifier) {
+        Actor actor = actorRepository.findByNodeIdentifierAndIdentifier(nodeIdentifier, identifier);
+
+        if (actor == null) {
+            throw new NotFoundException(String.format("Actor %s not found on node %s", identifier, nodeIdentifier));
+        }
+
+        return actor;
+    }
+
+    public Actor update(String identifier, ActorUpdateRequest request ,String nodeIdentifier) {
+        Actor actor = get(identifier, nodeIdentifier);
+
+        if (StringUtils.hasText(request.getDisplayName())) {
+            actor.setDisplayName(request.getDisplayName());
+        }
+
+        actor.setDescription(request.getDescription());
+
+        if (StringUtils.hasText(request.getType())) {
+            actor.setType(request.getType());
+        }
+
+        return actorRepository.save(actor);
+    }
+
+    public Actor changePassword(String identifier, ActorPasswordChangeRequest request, String nodeIdentifier) {
+        Actor actor = get(identifier, nodeIdentifier);
+        actor.setPassword(Password.hash(request.getPassword()));
+        return actorRepository.save(actor);
+
+    }
+
+    public Actor delete(String identifier, String nodeIdentifier) {
+        Actor actor = get(identifier, nodeIdentifier);
+        actorRepository.delete(actor);
+        return actor;
+
     }
 }
