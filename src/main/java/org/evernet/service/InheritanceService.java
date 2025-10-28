@@ -9,6 +9,8 @@ import org.evernet.repository.InheritanceRepository;
 import org.evernet.request.InheritanceRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class InheritanceService {
@@ -38,5 +40,19 @@ public class InheritanceService {
                 .build();
 
         return inheritanceRepository.save(inheritance);
+    }
+
+    public List<Inheritance> list(String nodeIdentifier, String structureAddress) {
+        return inheritanceRepository.findByNodeIdentifierAndStructureAddress(nodeIdentifier, structureAddress);
+    }
+
+    public Inheritance delete(String nodeIdentifier, String structureAddress, InheritanceRequest request) {
+        Inheritance inheritance = inheritanceRepository.findByNodeIdentifierAndStructureAddressAndInheritedStructureAddress(
+                nodeIdentifier, structureAddress, request.getInheritedStructureAddress()
+        );
+
+        inheritanceRepository.delete(inheritance);
+        return inheritance;
+
     }
 }
