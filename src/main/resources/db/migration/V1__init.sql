@@ -89,3 +89,17 @@ CREATE TABLE relationship
     updated_at             DATE,
     UNIQUE (node_identifier, from_structure_address, identifier)
 );
+
+CREATE TABLE state
+(
+    id                TEXT NOT NULL PRIMARY KEY,
+    node_identifier   TEXT,
+    structure_address TEXT,
+    identifier        TEXT,
+    display_name      TEXT,
+    description       TEXT,
+    creator           TEXT,
+    created_at        DATE,
+    updated_at        DATE,
+    UNIQUE (node_identifier, structure_address, identifier)
+);
