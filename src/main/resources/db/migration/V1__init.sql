@@ -73,3 +73,19 @@ CREATE TABLE inheritance
     updated_at                  DATE,
     UNIQUE (node_identifier, structure_address, inherited_structure_address)
 );
+
+CREATE TABLE relationship
+(
+    id                     TEXT PRIMARY KEY NOT NULL,
+    node_identifier        TEXT,
+    from_structure_address TEXT,
+    to_structure_address   TEXT,
+    type                   TEXT,
+    identifier             TEXT,
+    display_name           TEXT,
+    `description`          TEXT,
+    creator                TEXT,
+    created_at             DATE,
+    updated_at             DATE,
+    UNIQUE (node_identifier, from_structure_address, identifier)
+);

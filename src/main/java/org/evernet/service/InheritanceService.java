@@ -53,6 +53,5 @@ public class InheritanceService {
 
         inheritanceRepository.delete(inheritance);
         return inheritance;
-
     }
 }
