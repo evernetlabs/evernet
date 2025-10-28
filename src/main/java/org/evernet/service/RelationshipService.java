@@ -8,6 +8,8 @@ import org.evernet.repository.RelationshipRepository;
 import org.evernet.request.RelationshipCreationRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class RelationshipService {
@@ -39,5 +41,9 @@ public class RelationshipService {
                 .build();
 
         return relationshipRepository.save(relationship);
+    }
+
+    public List<Relationship> list(String structureAddress, String nodeIdentifier) {
+        return relationshipRepository.findByFromStructureAddressAndNodeIdentifier(structureAddress, nodeIdentifier);
     }
 }

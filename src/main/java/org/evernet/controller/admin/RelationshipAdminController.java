@@ -8,6 +8,8 @@ import org.evernet.request.RelationshipCreationRequest;
 import org.evernet.service.RelationshipService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/admins/nodes/{nodeIdentifier}/structure")
 @RequiredArgsConstructor
@@ -27,5 +29,10 @@ public class RelationshipAdminController extends AuthenticatedAdminController {
                 request,
                 getAdminIdentifier()
         );
+    }
+
+    @GetMapping("/relationships")
+    public List<Relationship> list(@PathVariable String nodeIdentifier, @RequestParam String structureAddress) {
+        return relationshipService.list(structureAddress, nodeIdentifier);
     }
 }

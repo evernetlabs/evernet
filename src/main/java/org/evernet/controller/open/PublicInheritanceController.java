@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/nodes/{nodeIdentifier}/structure")
+@RequestMapping("/api/v1/public/nodes/{nodeIdentifier}/structure")
 @RequiredArgsConstructor
 public class PublicInheritanceController {
 
