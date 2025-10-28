@@ -17,6 +17,7 @@ import org.evernet.response.ActorTokenResponse;
 import org.evernet.util.Ed25519KeyHelper;
 import org.evernet.util.Password;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -68,13 +69,19 @@ public class ActorService {
                 .vertexEndpoint(vertexEndpoint)
                 .build();
 
-        String token = jwt.getActorToken(AuthenticatedActor.builder()
-                .address(ActorAddress.builder()
-                        .identifier(actor.getIdentifier())
-                        .nodeAddress(actorNodeAddress)
-                        .build())
-                .targetNodeAddress(NodeAddress.fromString(request.getTargetNodeAddress()))
-                .build(), Ed25519KeyHelper.stringToPrivateKey(node.getSigningPrivateKey()));
+        NodeAddress targetNodeAddress = StringUtils.hasText(request.getTargetNodeAddress())
+                ? NodeAddress.fromString(request.getTargetNodeAddress())
+                : actorNodeAddress;
+
+        String token = jwt.getActorToken(
+                AuthenticatedActor.builder()
+                        .address(ActorAddress.builder()
+                                .identifier(actor.getIdentifier())
+                                .nodeAddress(actorNodeAddress)
+                                .build())
+                        .targetNodeAddress(targetNodeAddress)
+                        .build(),
+                Ed25519KeyHelper.stringToPrivateKey(node.getSigningPrivateKey()));
 
         return ActorTokenResponse.builder().token(token).build();
     }
