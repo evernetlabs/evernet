@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RelationshipRepository extends JpaRepository<Relationship, String> {
 
+    boolean existsByIdentifierAndFromStructureAddressAndNodeIdentifier(String identifier, String fromStructureAddress, String nodeIdentifier);
 }
