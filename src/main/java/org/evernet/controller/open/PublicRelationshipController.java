@@ -18,4 +18,9 @@ public class PublicRelationshipController {
     public List<Relationship> list(@PathVariable String nodeIdentifier, @RequestParam String structureAddress) {
         return relationshipService.list(structureAddress, nodeIdentifier);
     }
+
+    @GetMapping("/relationships/{identifier}")
+    public Relationship get(@PathVariable String identifier, @PathVariable String nodeIdentifier, @RequestParam String structureAddress) {
+        return relationshipService.get(identifier, nodeIdentifier, structureAddress);
+    }
 }

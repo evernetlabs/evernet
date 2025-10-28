@@ -12,4 +12,6 @@ public interface RelationshipRepository extends JpaRepository<Relationship, Stri
     boolean existsByIdentifierAndFromStructureAddressAndNodeIdentifier(String identifier, String fromStructureAddress, String nodeIdentifier);
 
     List<Relationship> findByFromStructureAddressAndNodeIdentifier(String fromStructureAddress, String nodeIdentifier);
+
+    Relationship findByIdentifierAndFromStructureAddressAndNodeIdentifier(String identifier, String fromStructureAddress, String nodeIdentifier);
 }
