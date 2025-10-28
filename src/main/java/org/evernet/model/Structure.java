@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -20,7 +21,12 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
-@Table
+@Table(uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "nodeIdentifier",
+                "address"
+        })
+})
 @Entity
 public class Structure {
 

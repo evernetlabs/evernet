@@ -23,6 +23,8 @@ public class StructureService {
 
     private final ConfigService configService;
 
+    private final RemoteStructureService remoteStructureService;
+
     public Structure create(StructureCreationRequest request, String nodeIdentifier, String creator) {
         StructureAddress structureAddress = StructureAddress.builder()
                 .nodeAddress(NodeAddress.builder().vertexEndpoint(configService.getVertexEndpoint()).identifier(nodeIdentifier).build())
@@ -74,5 +76,38 @@ public class StructureService {
         structureRepository.delete(structure);
         return structure;
 
+    }
+
+    public Boolean exists(String address, String nodeIdentifier) {
+        return structureRepository.existsByNodeIdentifierAndAddress(nodeIdentifier, address);
+
+    }
+
+    public Structure copy(String address, String nodeIdentifier) {
+        Structure structure = structureRepository.findByAddressAndNodeIdentifier(address, nodeIdentifier);
+
+        if (structure != null) {
+            return structure;
+        }
+
+        StructureAddress sourceStructureAddress = StructureAddress.fromString(address);
+
+        NodeAddress sourceNodeAddress = sourceStructureAddress.getNodeAddress();
+
+        Structure sourceStructure;
+        if (sourceNodeAddress.getVertexEndpoint().equals(configService.getVertexEndpoint())) {
+            sourceStructure = get(address, sourceNodeAddress.getIdentifier());
+        } else {
+            sourceStructure = remoteStructureService.get(sourceStructureAddress);
+        }
+
+        Structure targetStructure = Structure.builder()
+                .address(sourceStructure.getAddress())
+                .description(sourceStructure.getDescription())
+                .displayName(sourceStructure.getDisplayName())
+                .nodeIdentifier(nodeIdentifier)
+                .build();
+
+        return structureRepository.save(targetStructure);
     }
 }

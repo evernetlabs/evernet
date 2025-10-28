@@ -48,3 +48,28 @@ CREATE TABLE actor
     updated_at      DATE,
     UNIQUE (node_identifier, identifier)
 );
+
+CREATE TABLE structure
+(
+    id              TEXT PRIMARY KEY NOT NULL,
+    node_identifier TEXT,
+    address         TEXT,
+    display_name    TEXT,
+    `description`   TEXT,
+    creator         TEXT,
+    created_at      DATE,
+    updated_at      DATE,
+    UNIQUE (node_identifier, address)
+);
+
+CREATE TABLE inheritance
+(
+    id                          TEXT PRIMARY KEY NOT NULL,
+    node_identifier             TEXT,
+    structure_address           TEXT,
+    inherited_structure_address TEXT,
+    creator                     TEXT,
+    created_at                  DATE,
+    updated_at                  DATE,
+    UNIQUE (node_identifier, structure_address, inherited_structure_address)
+);

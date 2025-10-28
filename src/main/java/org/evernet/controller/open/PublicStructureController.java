@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/nodes/{nodeIdentifier}")
+@RequestMapping("/api/v1/public/nodes/{nodeIdentifier}")
 @RequiredArgsConstructor
 public class PublicStructureController {
 
