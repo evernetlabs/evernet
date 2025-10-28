@@ -170,6 +170,5 @@ public class ActorService {
         actor.setPassword(Password.hash(password));
         actorRepository.save(actor);
         return ActorPasswordResponse.builder().actor(actor).password(password).build();
-
     }
 }
