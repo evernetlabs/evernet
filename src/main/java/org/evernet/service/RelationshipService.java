@@ -1,6 +1,7 @@
 package org.evernet.service;
 
 import lombok.RequiredArgsConstructor;
+import org.evernet.bean.RelationshipChain;
 import org.evernet.exception.ClientException;
 import org.evernet.exception.NotFoundException;
 import org.evernet.model.Relationship;
@@ -9,6 +10,7 @@ import org.evernet.repository.RelationshipRepository;
 import org.evernet.request.RelationshipCreationRequest;
 import org.evernet.request.RelationshipUpdateRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -77,5 +79,19 @@ public class RelationshipService {
         Relationship relationship = get(identifier, structureAddress, nodeIdentifier);
         relationshipRepository.delete(relationship);
         return relationship;
+    }
+
+    public Relationship walk(String fromStructureAddress, RelationshipChain relationshipChain, String nodeIdentifier) {
+        if (CollectionUtils.isEmpty(relationshipChain.getNodes())) {
+            return null;
+        }
+
+        Relationship currentRelationship = null;
+        for (String relationshipChainNode : relationshipChain.getNodes()) {
+            currentRelationship = get(relationshipChainNode, fromStructureAddress, nodeIdentifier);
+            fromStructureAddress = currentRelationship.getToStructureAddress();
+        }
+
+        return currentRelationship;
     }
 }

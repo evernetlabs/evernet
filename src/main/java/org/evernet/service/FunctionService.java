@@ -88,4 +88,8 @@ public class FunctionService {
         functionRepository.delete(function);
         return function;
     }
+
+    public Boolean exists(String identifier, String structureAddress, String nodeIdentifier) {
+        return functionRepository.existsByNodeIdentifierAndStructureAddressAndIdentifier(nodeIdentifier, structureAddress, identifier);
+    }
 }
