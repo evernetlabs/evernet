@@ -1,0 +1,17 @@
+package org.evernet.repository;
+
+import org.evernet.model.WorkflowNodeDependency;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface WorkflowNodeDependencyRepository extends JpaRepository<WorkflowNodeDependency, String> {
+
+    boolean existsByNodeIdentifierAndStructureAddressAndWorkflowIdentifierAndDependentWorkflowNodeIdentifierAndDependencyWorkflowNodeIdentifier(String nodeIdentifier, String structureAddress, String workflowIdentifier, String dependentWorkflowNodeIdentifier, String dependencyWorkflowNodeIdentifier);
+
+    WorkflowNodeDependency findByNodeIdentifierAndStructureAddressAndWorkflowIdentifierAndDependentWorkflowNodeIdentifierAndDependencyWorkflowNodeIdentifier(String nodeIdentifier, String structureAddress, String workflowIdentifier, String dependentWorkflowNodeIdentifier, String dependencyWorkflowNodeIdentifier);
+
+    List<WorkflowNodeDependency> findByNodeIdentifierAndStructureAddressAndWorkflowIdentifierAndDependentWorkflowNodeIdentifier(String nodeIdentifier, String structureAddress, String workflowIdentifier, String dependentWorkflowNodeIdentifier);
+}
