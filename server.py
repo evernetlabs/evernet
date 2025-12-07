@@ -7,12 +7,14 @@ from flask_cors import CORS
 
 from mongita import MongitaClientDisk
 
-from controller.config_controller import ConfigController
 from service.config_service import ConfigService
 from service.admin_service import AdminService
+from service.node_service import NodeService
 
+from controller.config_controller import ConfigController
 from controller.health_check_controller import HealthCheckController
 from controller.admin_controller import AdminController
+from controller.node_controller import NodeController
 
 app = Flask(__name__)
 CORS(app)
@@ -22,11 +24,13 @@ mongo_client = MongitaClientDisk(host=os.getenv("DATA_DIR", "data")).vertex
 
 config_service = ConfigService(mongo_client.configs)
 admin_service = AdminService(mongo_client.admins, config_service)
+node_service = NodeService(mongo_client.nodes)
 
 
 HealthCheckController(app).register()
 AdminController(app, admin_service).register()
 ConfigController(app, config_service).register()
+NodeController(app, node_service).register()
 
 @app.before_request
 def before_request():
