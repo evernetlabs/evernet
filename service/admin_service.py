@@ -70,6 +70,25 @@ class AdminService:
 
         return self.to_dict(admin)
 
+    def change_password(self, identifier: str, password: str) -> dict:
+        fields = {
+            "updated_at": current_datetime(),
+            "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+        }
+
+        result = self.mongo.update_one({
+            "identifier": identifier
+        }, {
+            "$set": fields
+        })
+
+        if result.matched_count == 0:
+            raise Exception(f"Admin {identifier} not found")
+        
+        return {
+            "identifier": identifier
+        }
+
     @staticmethod
     def to_dict(self) -> dict:
         return {
