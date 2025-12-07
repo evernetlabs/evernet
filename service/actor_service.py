@@ -4,7 +4,6 @@ import bcrypt
 import jwt
 from mongita.collection import Collection
 
-from service import config_service
 from service.config_service import ConfigService
 from service.node_service import NodeService
 from utils.ed25519_utils import string_to_private_key
