@@ -34,6 +34,10 @@ class NodeService:
     def fetch(self, page: int = 0, size: int = 50) -> list[dict]:
         nodes = self.mongo.find().skip(page * size).limit(size)
         return [self.to_dict(node) for node in nodes]
+
+    def fetch_open(self, page: int = 0, size: int = 50) -> list[dict]:
+        nodes = self.mongo.find({"open": True}).skip(page * size).limit(size)
+        return [self.to_dict(node) for node in nodes]
     
     def get(self, identifier: str) -> dict:
         node = self.mongo.find_one({

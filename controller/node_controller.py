@@ -54,3 +54,14 @@ class NodeController:
         @authenticate_admin()
         def delete_node(_, identifier: str):
             return self.node_service.delete(identifier)
+
+        @self.app.get("/api/v1/nodes")
+        def fetch_open_nodes():
+            return self.node_service.fetch_open(
+                pagination_page(),
+                pagination_size()
+            )
+
+        @self.app.get("/api/v1/nodes/<identifier>")
+        def get_node_details(identifier: str):
+            return self.node_service.get(identifier)
