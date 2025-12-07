@@ -5,16 +5,26 @@ from dotenv import *
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 
+from mongita import MongitaClientDisk
+
 from service.config_service import ConfigService
+from service.admin_service import AdminService
+
 from controller.health_check_controller import HealthCheckController
+from controller.admin_controller import AdminController
 
 app = Flask(__name__)
 CORS(app)
 load_dotenv()
 
-config_service = ConfigService()
+mongo_client = MongitaClientDisk(host=os.getenv("DATA_DIR", "data")).vertex
+
+config_service = ConfigService(mongo_client.configs)
+admin_service = AdminService(mongo_client.admins, config_service)
+
 
 HealthCheckController(app).register()
+AdminController(app, admin_service).register()
 
 @app.before_request
 def before_request():
@@ -40,4 +50,4 @@ def handle_all_errors(e):
 
 
 if __name__ == '__main__':
-    app.run(host=os.getenv("HOST"), port=int(os.getenv("PORT")), debug=os.getenv("ENV") != "PROD")
+    app.run(host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "3000")), debug=os.getenv("ENV", "DEV") != "PROD")
