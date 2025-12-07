@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 
 from service.config_service import ConfigService
+from controller.health_check_controller import HealthCheckController
 
 app = Flask(__name__)
 CORS(app)
@@ -13,6 +14,7 @@ load_dotenv()
 
 config_service = ConfigService()
 
+HealthCheckController(app).register()
 
 @app.before_request
 def before_request():
