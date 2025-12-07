@@ -35,7 +35,7 @@ class AdminService:
             "identifier": identifier
         }
 
-    def get_token(self, identifier: str, password: str) -> str:
+    def get_token(self, identifier: str, password: str) -> dict:
 
         admin = self.mongo.find_one({
             "identifier": identifier
@@ -53,9 +53,28 @@ class AdminService:
             "type": "admin",
             "jti": str(uuid.uuid4()),
             "iss": vertex_endpoint,
-            "exp": vertex_endpoint
+            "aud": vertex_endpoint
         }, self.config_service.get_jwt_signing_key(), algorithm="HS256")
 
         return {
             "token": token
+        }
+
+    def get(self, identifier: str) -> dict:
+        admin = self.mongo.find_one({
+            "identifier": identifier
+        })
+
+        if not admin:
+            raise Exception(f"Admin {identifier} not found")
+
+        return self.to_dict(admin)
+
+    @staticmethod
+    def to_dict(self) -> dict:
+        return {
+            "identifier": self.get("identifier"),
+            "creator": self.get("creator"),
+            "created_at": self.get("created_at"),
+            "updated_at": self.get("updated_at")
         }
