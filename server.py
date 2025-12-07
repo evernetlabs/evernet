@@ -7,6 +7,7 @@ from flask_cors import CORS
 
 from mongita import MongitaClientDisk
 
+from controller.config_controller import ConfigController
 from service.config_service import ConfigService
 from service.admin_service import AdminService
 
@@ -25,6 +26,7 @@ admin_service = AdminService(mongo_client.admins, config_service)
 
 HealthCheckController(app).register()
 AdminController(app, admin_service).register()
+ConfigController(app, config_service).register()
 
 @app.before_request
 def before_request():

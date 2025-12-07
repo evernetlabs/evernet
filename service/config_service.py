@@ -13,19 +13,36 @@ class ConfigService:
         self.__set_if_missing("federation_protocol", federation_protocol)
 
     def get_jwt_signing_key(self):
-        return self.__get_key("jwt_signing_key")
+        return self.__get("jwt_signing_key")
+
+    def set_jwt_signing_key(self, jwt_sigining_key):
+        self.__set("jwt_signing_key", jwt_sigining_key)
 
     def get_vertex_endpoint(self):
-        return self.__get_key("vertex_endpoint")
+        return self.__get("vertex_endpoint")
+
+    def set_vertex_endpoint(self, vertex_endpoint):
+        self.__set("vertex_endpoint", vertex_endpoint)
 
     def get_federation_protocol(self):
-        return self.__get_key("federation_protocol")
+        return self.__get("federation_protocol")
+
+    def set_federation_protocol(self, federation_protocol):
+        if federation_protocol not in ["http", "https"]:
+            raise Exception(f"Invalid federation protocol {federation_protocol}")
+        self.__set("federation_protocol", federation_protocol)
 
     def get_vertex_display_name(self):
-        return self.__get_key("vertex_display_name")
+        return self.__get("vertex_display_name")
+
+    def set_vertex_display_name(self, vertex_display_name):
+        self.__set("vertex_display_name", vertex_display_name)
 
     def get_vertex_description(self):
-        return self.__get_key("vertex_description")
+        return self.__get("vertex_description")
+
+    def set_vertex_description(self, vertex_description):
+        self.__set("vertex_description", vertex_description)
 
     def __set_if_missing(self, key: str, value: str):
         if self.mongo.count_documents({"key": key}) > 0:
@@ -37,9 +54,22 @@ class ConfigService:
             "created_at": current_datetime(),
             "updated_at": current_datetime()
         })
+
+    def __set(self, key: str, value: str):
+        result = self.mongo.update_one({
+            "key": key
+        }, {
+            "$set": {
+                "value": value,
+                "updated_at": current_datetime()
+            }
+        })
+
+        if result.matched_count == 0:
+            raise Exception(f"Config {key} not found")
  
  
-    def __get_key(self, key: str) -> str:
+    def __get(self, key: str) -> str:
         return self.mongo.find_one({
             "key": key
         }).get("value", None)
