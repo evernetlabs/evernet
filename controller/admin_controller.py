@@ -19,3 +19,10 @@ class AdminController:
                 required_param("vertex_display_name", str),
                 required_param("vertex_description", str)
             )
+
+        @self.app.post("/api/v1/admins/token")
+        def get_admin_token():
+            return self.admin_service.get_token(
+                required_param("identifier", str),
+                required_param("password", str)
+            )

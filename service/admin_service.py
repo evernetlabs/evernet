@@ -1,8 +1,12 @@
+import uuid
 import bcrypt
+import jwt
+import time
 from mongita.collection import Collection
 from service.config_service import ConfigService
 from utils.time_utils import current_datetime
 from utils.secret_utils import generate_secret
+
 
 class AdminService:
     def __init__(self, mongo: Collection, config_service: ConfigService) -> None:
@@ -29,4 +33,29 @@ class AdminService:
         
         return {
             "identifier": identifier
+        }
+
+    def get_token(self, identifier: str, password: str) -> str:
+
+        admin = self.mongo.find_one({
+            "identifier": identifier
+        })
+
+        if not admin or not bcrypt.checkpw(password.encode("utf-8"), admin.get("password", "").encode("utf-8")):
+            raise Exception("Invalid identifier and password combination")
+
+        vertex_endpoint = self.config_service.get_vertex_endpoint()
+
+        token = jwt.encode({
+            "sub": admin.get("identifier"),
+            "iat": int(time.time()),
+            "exp": int(time.time() + 60 * 60),
+            "type": "admin",
+            "jti": str(uuid.uuid4()),
+            "iss": vertex_endpoint,
+            "exp": vertex_endpoint
+        }, self.config_service.get_jwt_signing_key(), algorithm="HS256")
+
+        return {
+            "token": token
         }
