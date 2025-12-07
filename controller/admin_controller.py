@@ -1,5 +1,5 @@
 from flask import Flask
-from utils.api_utils import authenticate_admin, required_param
+from utils.api_utils import authenticate_admin, pagination_page, pagination_size, required_param
 
 from service.admin_service import AdminService
 
@@ -39,3 +39,35 @@ class AdminController:
                 admin.get("identifier"),
                 required_param("password", str)
             )
+
+        @self.app.post("/api/v1/admins")
+        @authenticate_admin()
+        def add_admin(admin):
+            return self.admin_service.add(
+                required_param("identifier", str),
+                admin.get("identifier")
+            )
+
+        @self.app.get("/api/v1/admins")
+        @authenticate_admin()
+        def fetch_admins(admin):
+            return self.admin_service.fetch(
+                pagination_page(),
+                pagination_size()
+            )
+
+        @self.app.get("/api/v1/admins/<identifier>")
+        @authenticate_admin()
+        def get_admin(_, identifier):
+            return self.admin_service.get(identifier)
+
+        
+        @self.app.put("/api/v1/admins/<identifier>/password")
+        @authenticate_admin()
+        def reset_admin_password(_, identifier):
+            return self.admin_service.reset_password(identifier)
+
+        @self.app.delete("/api/v1/admins/<identifier>")
+        @authenticate_admin()
+        def delete_admin(_, identifier):
+            return self.admin_service.delete(identifier)

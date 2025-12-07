@@ -89,6 +89,59 @@ class AdminService:
             "identifier": identifier
         }
 
+    def add(self, identifier: str, creator: str) -> dict:
+        if self.mongo.count_documents({
+            "identifier": identifier
+        }) > 0:
+            raise Exception(f"Admin {identifier} already exists")
+
+        password = generate_secret(16)
+
+        self.mongo.insert_one({
+            "identifier": identifier,
+            "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
+            "creator": creator,
+            "created_at": current_datetime(),
+            "updated_at": current_datetime()
+        })
+
+        return {
+            "identifier": identifier,
+            "password": password
+        }
+
+    def fetch(self, page: int = 0, size: int = 50) -> list[dict]:
+        return [self.to_dict(admin) for admin in self.mongo.find().skip(page * size).limit(size)]
+
+    def delete(self, identifier: str) -> dict:
+        result = self.mongo.delete_one({
+            "identifier": identifier
+        })
+
+        if result.deleted_count == 0:
+            raise Exception(f"Admin {identifier} not found")
+
+        return {
+            "identifier": identifier
+        }
+
+    def reset_password(self, identifier: str) -> dict:
+        password = generate_secret(16)
+
+        self.mongo.update_one({
+            "identifier": identifier
+        }, {
+            "$set": {
+                "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
+                "updated_at": current_datetime()
+            }
+        })
+
+        return {
+            "identifier": identifier,
+            "password": password
+        }
+
     @staticmethod
     def to_dict(self) -> dict:
         return {
