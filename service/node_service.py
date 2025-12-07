@@ -47,7 +47,18 @@ class NodeService:
         if not node:
             raise Exception(f"Node {identifier} not found")
         return self.to_dict(node)
+
+    def get_signing_keys(self, identifier: str) -> dict:
+        node = self.mongo.find_one({"identifier": identifier})
+
+        if not node:
+            raise Exception(f"Node {identifier} not found")
         
+        return {
+            "signing_private_key": node.get("signing_private_key"),
+            "signing_public_key": node.get("signing_public_key")
+        }
+
     def update(self, identifier: str, display_name: str, description: str) -> dict:
         fields = {
             "updated_at": current_datetime()

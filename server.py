@@ -28,7 +28,7 @@ mongo_client = MongitaClientDisk(host=os.getenv("DATA_DIR", "data")).vertex
 config_service = ConfigService(mongo_client.configs)
 admin_service = AdminService(mongo_client.admins, config_service)
 node_service = NodeService(mongo_client.nodes)
-actor_service = ActorService(mongo_client.actors, node_service)
+actor_service = ActorService(mongo_client.actors, node_service, config_service)
 
 
 HealthCheckController(app).register()
