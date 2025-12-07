@@ -20,8 +20,8 @@ class NodeService:
             "display_name": display_name,
             "description": description,
             "open": open,
-            "private_key": private_key_to_string(private_key),
-            "public_key": public_key_to_string(public_key),
+            "signing_private_key": private_key_to_string(private_key),
+            "signing_public_key": public_key_to_string(public_key),
             "creator": creator,
             "created_at": current_datetime(),
             "updated_at": current_datetime()
