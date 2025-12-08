@@ -37,3 +37,31 @@ class ActorController:
                 actor.get("audience_node_identifier"),
                 actor.get("identifier")
             )
+
+        @self.app.put("/api/v1/actors/current")
+        @authenticate_actor(must_be_local=True)
+        def update_current_actor(actor):
+            return self.actor_service.update(
+                actor.get("audience_node_identifier"),
+                actor.get("identifier"),
+                optional_param("type"),
+                optional_param("display_name"),
+                optional_param("description")
+            )
+
+        @self.app.put("/api/v1/actors/current/password")
+        @authenticate_actor(must_be_local=True)
+        def change_current_actor_password(actor):
+            return self.actor_service.change_password(
+                actor.get("audience_node_identifier"),
+                actor.get("identifier"),
+                required_param("password")
+            )
+
+        @self.app.delete("/api/v1/actors/current")
+        @authenticate_actor(must_be_local=True)
+        def delete_current_actor(actor):
+            return self.actor_service.delete(
+                actor.get("audience_node_identifier"),
+                actor.get("identifier")
+            )

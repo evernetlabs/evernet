@@ -88,16 +88,67 @@ class ActorService:
 
         return self.to_dict(actor)
 
-    def update(self):
-        pass
+    def update(self, node_identifier: str, identifier: str, actor_type: str, display_name: str, description: str) -> dict:
+        fields = {
+            "updated_at": current_datetime()
+        }
+        
+        if actor_type:
+            fields["type"] = actor_type
+        if display_name:
+            fields["display_name"] = display_name
+        if description:
+            fields["description"] = description
+        
+        result = self.mongo.update_one({
+            "node_identifier": node_identifier,
+            "identifier": identifier
+        }, {
+            "$set": fields
+        })
+
+        if result.matched_count == 0:
+            raise Exception(f"Actor {identifier} not found on node {node_identifier}")
+
+        return {
+            "identifier": identifier,
+            "node_identifier": node_identifier
+        }
     
-    def change_password(self):
-        pass
+    def change_password(self, node_identifier: str, identifier: str, password: str) -> dict:
+        result = self.mongo.update_one({
+            "node_identifier": node_identifier,
+            "identifier": identifier
+        }, {
+            "$set": {
+                "password": bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                "updated_at": current_datetime()
+            }
+        })
+        
+        if result.matched_count == 0:
+            raise Exception(f"Actor {identifier} not found on node {node_identifier}")
 
-    def delete(self):
-        pass
+        return {
+            "identifier": identifier,
+            "node_identifier": node_identifier
+        }
 
-    def add(self):
+    def delete(self, node_identifier: str, identifier: str) -> dict:
+        result = self.mongo.delete_one({
+            "node_identifier": node_identifier,
+            "identifier": identifier
+        })
+        
+        if result.deleted_count == 0:
+            raise Exception(f"Actor {identifier} not found on node {node_identifier}")
+
+        return {
+            "identifier": identifier,
+            "node_identifier": node_identifier
+        }
+
+    def add(self, node_identifier: str, identifier: str, actor_type: str, display_name: str, description: str, creator: str) -> dict:
         pass
 
     def fetch(self):
