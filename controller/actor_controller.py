@@ -1,7 +1,7 @@
 from flask import Flask
 
 from service.actor_service import ActorService
-from utils.api_utils import optional_param, required_param
+from utils.api_utils import authenticate_actor, optional_param, required_param
 
 class ActorController:
     def __init__(self, app: Flask, actor_service: ActorService) -> None:
@@ -28,4 +28,12 @@ class ActorController:
                 required_param("identifier"),
                 required_param("password"),
                 optional_param("audience_node_address")
+            )
+
+        @self.app.get("/api/v1/actors/current")
+        @authenticate_actor(must_be_local=True)
+        def get_current_actor_details(actor):
+            return self.actor_service.get(
+                actor.get("audience_node_identifier"),
+                actor.get("identifier")
             )

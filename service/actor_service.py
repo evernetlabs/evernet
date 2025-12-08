@@ -72,11 +72,21 @@ class ActorService:
                 "exp": int(time.time()) + 30 * 24 * 60 * 60,
                 "iss": issuer_node_address,
                 "aud": audience_node_address
+            }, headers={
+                "kid": issuer_node_address
             }, key=string_to_private_key(node.get("signing_private_key")), algorithm="EdDSA")
         }
 
-    def get(self):
-        pass
+    def get(self, node_identifier: str, identifier: str) -> dict:
+        actor = self.mongo.find_one({
+            "node_identifier": node_identifier,
+            "identifier": identifier
+        })
+        
+        if not actor:
+            raise Exception(f"Actor {identifier} not found on node {node_identifier}")
+
+        return self.to_dict(actor)
 
     def update(self):
         pass
@@ -97,5 +107,14 @@ class ActorService:
         pass
 
     @staticmethod
-    def to_dict(self):
-        pass
+    def to_dict(actor: dict):
+        return {
+            "node_identifier": actor.get("node_identifier"),
+            "identifier": actor.get("identifier"),
+            "type": actor.get("type"),
+            "display_name": actor.get("display_name"),
+            "description": actor.get("description"),
+            "creator": actor.get("creator"),
+            "created_at": actor.get("created_at"),
+            "updated_at": actor.get("updated_at")
+        }

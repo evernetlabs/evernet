@@ -1,4 +1,5 @@
 import os
+from platform import node
 import traceback
 
 from dotenv import *
@@ -10,6 +11,7 @@ from mongita import MongitaClientDisk
 from service.actor_service import ActorService
 from service.config_service import ConfigService
 from service.admin_service import AdminService
+from service.node_key_service import NodeKeyService
 from service.node_service import NodeService
 from service.actor_service import ActorService
 
@@ -18,6 +20,7 @@ from controller.health_check_controller import HealthCheckController
 from controller.admin_controller import AdminController
 from controller.node_controller import NodeController
 from controller.actor_controller import ActorController
+from service.remote_node_service import RemoteNodeService
 
 app = Flask(__name__)
 CORS(app)
@@ -28,6 +31,8 @@ mongo_client = MongitaClientDisk(host=os.getenv("DATA_DIR", "data")).vertex
 config_service = ConfigService(mongo_client.configs)
 admin_service = AdminService(mongo_client.admins, config_service)
 node_service = NodeService(mongo_client.nodes)
+remote_node_service = RemoteNodeService()
+node_key_service = NodeKeyService(node_service, remote_node_service, config_service)
 actor_service = ActorService(mongo_client.actors, node_service, config_service)
 
 
@@ -41,6 +46,8 @@ ActorController(app, actor_service).register()
 def before_request():
     g.request_body = request.get_json(force=True, silent=True)
     g.config_service = config_service
+    g.node_key_service = node_key_service
+    g.node_service = node_service
 
 
 @app.errorhandler(404)

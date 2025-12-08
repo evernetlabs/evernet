@@ -112,6 +112,9 @@ class NodeService:
         return {
             "identifier": identifier
         }
+
+    def exists(self, identifier: str) -> bool:
+        return self.mongo.count_documents({"identifier": identifier}) > 0
     
     @staticmethod
     def to_dict(node: dict) -> dict:
@@ -119,6 +122,7 @@ class NodeService:
             "identifier": node.get("identifier"),
             "display_name": node.get("display_name"),
             "description": node.get("description"),
+            "signing_public_key": node.get("signing_public_key"),
             "open": node.get("open"),
             "creator": node.get("creator"),
             "created_at": node.get("created_at"),

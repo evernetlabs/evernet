@@ -75,3 +75,71 @@ def authenticate_admin():
         return decorated
 
     return decorator
+
+
+def authenticate_actor(must_be_local=False):
+    def decorator(f):
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            token = None
+
+            if 'Authorization' in request.headers:
+                auth_header = request.headers['Authorization']
+                if auth_header.startswith('Bearer '):
+                    token = auth_header.split(' ')[1]
+
+            if not token:
+                raise Exception("Invalid access token")
+
+            try:
+                kid = jwt.get_unverified_header(token).get("kid")
+                issuer_vertex_endpoint, issuer_node_identifier, issuer_signing_public_key = g.node_key_service.get_signing_public_key(kid)
+
+                data = jwt.decode(
+                    token,
+                    issuer_signing_public_key,
+                    algorithms=['EdDSA'],
+                    issuer="%s/%s" % (issuer_vertex_endpoint, issuer_node_identifier),
+                    options={"verify_aud": False}
+                )
+
+                if data.get("type") != "actor":
+                    raise Exception("Invalid access token")
+
+                audience = data.get("aud")
+                audience_components = audience.split("/")
+
+                if len(audience_components) != 2:
+                    raise Exception("Invalid audience")
+
+                current_vertex_endpoint = g.config_service.get_vertex_endpoint()
+                audience_vertex_endpoint = audience_components[0]
+                audience_node_identifier = audience_components[1]
+
+                if current_vertex_endpoint != audience_vertex_endpoint:
+                    raise Exception("Audience vertex endpoint does not match current vertex")
+
+                if not g.node_service.exists(audience_node_identifier):
+                    raise Exception("Audience node does not exist")
+
+                if must_be_local:
+                    if audience_vertex_endpoint != issuer_vertex_endpoint and audience_node_identifier != issuer_node_identifier:
+                        raise Exception("Audience node is not local to the issuer vertex")
+
+                current_actor = {
+                    "identifier": data.get("sub"),
+                    "address": "%s/%s/%s" % (issuer_vertex_endpoint, issuer_node_identifier, data.get("sub")),
+                    "issuer_vertex_endpoint": issuer_vertex_endpoint,
+                    "issuer_node_identifier": issuer_node_identifier,
+                    "issuer_node_address": "%s/%s" % (issuer_vertex_endpoint, issuer_node_identifier),
+                    "audience_node_identifier": audience_node_identifier,
+                    "audience_node_address": "%s/%s" % (audience_vertex_endpoint, audience_node_identifier),
+                }
+            except Exception as _:
+                raise Exception("Invalid access token")
+
+            return f(current_actor, *args, **kwargs)
+
+        return decorated
+    return decorator
+        
