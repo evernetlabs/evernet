@@ -1,3 +1,4 @@
+from platform import node
 import time
 import uuid
 import bcrypt
@@ -8,6 +9,7 @@ from service.config_service import ConfigService
 from service.node_service import NodeService
 from utils.ed25519_utils import string_to_private_key
 from utils.time_utils import current_datetime
+from utils.secret_utils import generate_secret
 
 
 class ActorService:
@@ -149,13 +151,61 @@ class ActorService:
         }
 
     def add(self, node_identifier: str, identifier: str, actor_type: str, display_name: str, description: str, creator: str) -> dict:
-        pass
+        if not self.node_service.exists(node_identifier):
+            raise Exception(f"Node {node_identifier} not found")
 
-    def fetch(self):
-        pass
+        if self.mongo.count_documents({
+            "node_identifier": node_identifier,
+            "identifier": identifier
+        }) > 0:
+            raise Exception(f"Actor {identifier} already exists on node {node_identifier}")
 
-    def reset_password(self):
-        pass
+
+        password = generate_secret(16)
+
+        self.mongo.insert_one({
+            "node_identifier": node_identifier,
+            "identifier": identifier,
+            "password": bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+            "type": actor_type,
+            "display_name": display_name,
+            "description": description,
+            "creator": creator,
+            "created_at": current_datetime(),
+            "updated_at": current_datetime()
+        })
+
+        return {
+            "identifier": identifier,
+            "node_identifier": node_identifier,
+            "password": password
+        }
+
+    def fetch(self, node_identifier: str, page: int = 0, size: int = 50) -> list[dict]:
+        actors = self.mongo.find({
+            "node_identifier": node_identifier
+        }).skip(page * size).limit(size)
+        
+        return [self.to_dict(actor) for actor in actors]
+
+    def reset_password(self, node_identifier: str, identifier: str) -> dict:
+        password = generate_secret(16)
+        
+        self.mongo.update_one({
+            "node_identifier": node_identifier,
+            "identifier": identifier
+        }, {
+            "$set": {
+                "password": bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8'),
+                "updated_at": current_datetime()
+            }
+        })
+
+        return {
+            "identifier": identifier,
+            "node_identifier": node_identifier,
+            "password": password
+        }
 
     @staticmethod
     def to_dict(actor: dict):

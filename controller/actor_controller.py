@@ -1,7 +1,7 @@
 from flask import Flask
 
 from service.actor_service import ActorService
-from utils.api_utils import authenticate_actor, optional_param, required_param
+from utils.api_utils import authenticate_actor, authenticate_admin, optional_param, pagination_page, pagination_size, required_param
 
 class ActorController:
     def __init__(self, app: Flask, actor_service: ActorService) -> None:
@@ -64,4 +64,60 @@ class ActorController:
             return self.actor_service.delete(
                 actor.get("audience_node_identifier"),
                 actor.get("identifier")
+            )
+
+        @self.app.post("/api/v1/admins/nodes/<node_identifier>/actors")
+        @authenticate_admin()
+        def add_actor(admin, node_identifier):
+            return self.actor_service.add(
+                node_identifier,
+                required_param("identifier"),
+                required_param("type"),
+                required_param("display_name"),
+                required_param("description"),
+                admin.get("identifier")
+            )
+
+        @self.app.get("/api/v1/admins/nodes/<node_identifier>/actors")
+        @authenticate_admin()
+        def fetch_actors(_, node_identifier):
+            return self.actor_service.fetch(
+                node_identifier,
+                pagination_page(),
+                pagination_size()
+            )
+
+        @self.app.get("/api/v1/admins/nodes/<node_identifier>/actors/<identifier>")
+        @authenticate_admin()
+        def get_actor_details(_, node_identifier, identifier):
+            return self.actor_service.get(
+                node_identifier,
+                identifier
+            )
+
+        @self.app.put("/api/v1/admins/nodes/<node_identifier>/actors/<identifier>")
+        @authenticate_admin()
+        def update_actor_details(_, node_identifier, identifier):
+            return self.actor_service.update(
+                node_identifier,
+                identifier,
+                optional_param("type"),
+                optional_param("display_name"),
+                optional_param("description")
+            )
+
+        @self.app.delete("/api/v1/admins/nodes/<node_identifier>/actors/<identifier>")
+        @authenticate_admin()
+        def delete_actor(_, node_identifier, identifier):
+            return self.actor_service.delete(
+                node_identifier,
+                identifier
+            )
+
+        @self.app.put("/api/v1/admins/nodes/<node_identifier>/actors/<identifier>/password")
+        @authenticate_admin()
+        def reset_actor_password(_, node_identifier, identifier):
+            return self.actor_service.reset_password(
+                node_identifier,
+                identifier
             )
