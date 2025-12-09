@@ -14,13 +14,15 @@ from service.admin_service import AdminService
 from service.node_key_service import NodeKeyService
 from service.node_service import NodeService
 from service.actor_service import ActorService
+from service.remote_node_service import RemoteNodeService
+from service.structure_service import StructureService
 
 from controller.config_controller import ConfigController
 from controller.health_check_controller import HealthCheckController
 from controller.admin_controller import AdminController
 from controller.node_controller import NodeController
 from controller.actor_controller import ActorController
-from service.remote_node_service import RemoteNodeService
+from controller.structure_controller import StructureController
 
 app = Flask(__name__)
 CORS(app)
@@ -34,6 +36,7 @@ node_service = NodeService(mongo_client.nodes)
 remote_node_service = RemoteNodeService()
 node_key_service = NodeKeyService(node_service, remote_node_service, config_service)
 actor_service = ActorService(mongo_client.actors, node_service, config_service)
+structure_service = StructureService(mongo_client.structures, node_service, config_service)
 
 
 HealthCheckController(app).register()
@@ -41,6 +44,7 @@ AdminController(app, admin_service).register()
 ConfigController(app, config_service).register()
 NodeController(app, node_service).register()
 ActorController(app, actor_service).register()
+StructureController(app, structure_service).register()
 
 @app.before_request
 def before_request():
