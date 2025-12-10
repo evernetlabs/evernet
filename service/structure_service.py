@@ -36,3 +36,19 @@ class StructureService:
         return {
             "address": structure_address
         }
+
+    def fetch(self, node_identifier: str, page: int, size: int) -> list[dict]:
+        structures = self.mongo.find({'node_identifier': node_identifier}).skip(page * size).limit(size)
+        return [self.to_dict(structure) for structure in structures]
+
+    @staticmethod
+    def to_dict(structure: dict) -> dict:
+        return {
+            "node_identifier": structure.get("node_identifier"),
+            "address": structure.get("address"),
+            "display_name": structure.get("display_name"),
+            "description": structure.get("description"),
+            "creator": structure.get("creator"),
+            "created_at": structure.get("created_at"),
+            "updated_at": structure.get("updated_at")
+        }
