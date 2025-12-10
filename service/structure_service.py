@@ -83,6 +83,20 @@ class StructureService:
             "address": address
         }
 
+    def delete(self, node_identifier: str, address: str) -> dict:
+        result = self.mongo.delete_one({
+            "node_identifier": node_identifier,
+            "address": address
+        })
+
+        if result.deleted_count == 0:
+            raise Exception(f'Structure {address} not found on node {node_identifier}')
+            
+        return {
+            "node_identifier": node_identifier,
+            "address": address
+        }
+
     @staticmethod
     def to_dict(structure: dict) -> dict:
         return {

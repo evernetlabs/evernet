@@ -60,3 +60,11 @@ class StructureController:
                 optional_param("display_name", str),
                 optional_param("description", str)
             )
+
+        @self.app.delete("/api/v1/admins/nodes/<node_identifier>/structure")
+        @authenticate_admin()
+        def delete_structure(_, node_identifier):
+            return self.structure_service.delete(
+                node_identifier,
+                request.args.get("address")
+            )
