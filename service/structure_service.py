@@ -41,6 +41,17 @@ class StructureService:
         structures = self.mongo.find({'node_identifier': node_identifier}).skip(page * size).limit(size)
         return [self.to_dict(structure) for structure in structures]
 
+    def get(self, node_identifier: str, address: str) -> dict:
+        structure = self.mongo.find_one({
+            "node_identifier": node_identifier,
+            "address": address
+        })
+
+        if not structure:
+            raise Exception(f'Structure {address} not found on node {node_identifier}')
+        
+        return self.to_dict(structure)
+
     @staticmethod
     def to_dict(structure: dict) -> dict:
         return {

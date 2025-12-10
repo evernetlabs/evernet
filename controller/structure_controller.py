@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from service.structure_service import StructureService
 from utils.api_utils import authenticate_admin, pagination_page, pagination_size, required_param
 
@@ -34,4 +34,19 @@ class StructureController:
                 node_identifier,
                 pagination_page(),
                 pagination_size()
+            )
+
+        @self.app.get('/api/v1/admins/nodes/<node_identifier>/structure')
+        @authenticate_admin()
+        def get_structure(_, node_identifier):
+            return self.structure_service.get(
+                node_identifier,
+                request.args.get("address")
+            )
+
+        @self.app.get("/api/v1/nodes/<node_identifier>/structure")
+        def public_get_structure(node_identifier):
+            return self.structure_service.get(
+                node_identifier,
+                request.args.get("address")
             )
