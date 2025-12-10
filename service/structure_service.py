@@ -1,3 +1,5 @@
+from operator import add
+from dns import node
 from pymongo.collection import Collection
 
 from service.config_service import ConfigService
@@ -51,6 +53,35 @@ class StructureService:
             raise Exception(f'Structure {address} not found on node {node_identifier}')
         
         return self.to_dict(structure)
+
+    def update(self, node_identifier: str, address: str, display_name: str, description: str) -> dict:
+        fields = {
+            "updated_at": current_datetime()
+        }
+
+        if display_name:
+            fields["display_name"] = display_name
+
+        if description:
+            fields["description"] = description
+
+        result = self.mongo.update_one(
+            {
+                "node_identifier": node_identifier,
+                "address": address
+            },
+            {
+                "$set": fields
+            }
+        )
+
+        if result.matched_count == 0:
+            raise Exception(f'Structure {address} not found on node {node_identifier}')
+
+        return {
+            "node_identifier": node_identifier,
+            "address": address
+        }
 
     @staticmethod
     def to_dict(structure: dict) -> dict:
