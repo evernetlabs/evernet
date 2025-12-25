@@ -55,7 +55,7 @@ def authenticate_admin():
             try:
                 data = jwt.decode(
                     token,
-                    g.jwt_signing_key,
+                    g.config_service.get_jwt_signing_key(),
                     algorithms=['HS256'],
                     issuer=vertex_endpoint,
                     audience=vertex_endpoint

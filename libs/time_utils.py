@@ -1,5 +1,5 @@
 import datetime
 
 
-def now():
+def current_datetime():
     return datetime.datetime.now(tz=datetime.timezone.utc)

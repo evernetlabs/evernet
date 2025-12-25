@@ -2,10 +2,13 @@ import os
 import traceback
 
 from dotenv import *
-from flask import Flask, request, jsonify, g
+from flask import Flask, config, request, jsonify, g
 from mongita import MongitaClientDisk
 
+from api.admin_api import AdminAPI
 from api.health_check_api import HealthCheckAPI
+from service.admin_service import AdminService
+from service.config_service import ConfigService
 
 load_dotenv()
 
@@ -14,11 +17,16 @@ db = db_client.vertex
 
 app = Flask(__name__)
 
+config_service = ConfigService(db.configs)
+admin_service = AdminService(db.admins, config_service)
+
 HealthCheckAPI(app).register()
+AdminAPI(app, admin_service).register()
 
 @app.before_request
 def before_request():
     g.request_body = request.get_json(force=True, silent=True)
+    g.config_service = config_service
 
 
 @app.errorhandler(404)
