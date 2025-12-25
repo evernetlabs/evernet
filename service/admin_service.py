@@ -58,3 +58,22 @@ class AdminService:
         return {
             "token": token
         }
+
+    def get(self, identifier: str) -> dict:
+        admin = self.mongo.find_one({
+            "identifier": identifier
+        })
+
+        if not admin:
+            raise Exception(f"Admin {identifier} not found")
+
+        return self.to_dict(admin)
+
+    @staticmethod
+    def to_dict(self):
+        return {
+            "identifier": self.get("identifier"),
+            "creator": self.get("creator"),
+            "created_at": self.get("created_at"),
+            "updated_at": self.get("updated_at")
+        }

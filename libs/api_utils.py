@@ -65,7 +65,7 @@ def authenticate_admin():
                     raise Exception("Invalid access token type")
 
                 current_admin = {
-                    "id": data["sub"]
+                    "identifier": data["sub"]
                 }
 
             except Exception as _:

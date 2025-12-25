@@ -1,6 +1,6 @@
 from service.admin_service import AdminService
 from flask import Flask
-from libs.api_utils import required_param
+from libs.api_utils import authenticate_admin, required_param
 
 class AdminAPI:
     def __init__(self, app: Flask, admin_service: AdminService) -> None:
@@ -24,4 +24,11 @@ class AdminAPI:
             return self.admin_service.get_token(
                 required_param("identifier"),
                 required_param("password")
+            )
+
+        @self.app.get("/api/v1/admins/current")
+        @authenticate_admin()
+        def get_current_admin(admin):
+            return self.admin_service.get(
+                admin.get("identifier")
             )
