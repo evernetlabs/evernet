@@ -1,0 +1,7 @@
+Flask
+mongita
+PyJWT
+bcrypt
+python-dotenv
+gunicorn
+requests

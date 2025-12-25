@@ -159,4 +159,5 @@ cython_debug/
 
 # Data files
 *.sqlite
+*.sqlite3
 data/
