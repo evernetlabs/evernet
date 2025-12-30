@@ -51,3 +51,20 @@ class AdminService:
         }, key=self.config_service.get_jwt_signing_key(), algorithm="HS256")
 
         return {"token": token}
+
+    def get(self, identifier: str) -> dict:
+        admin = self.mongo.find_one({"identifier": identifier})
+        
+        if not admin:
+            raise Exception(f"Admin {identifier} not found")
+
+        return self.to_dict(admin)
+
+    @staticmethod
+    def to_dict(admin) -> dict:
+        return {
+            "identifier": admin.get("identifier"),
+            "creator": admin.get("creator"),
+            "created_at": admin.get("created_at"),
+            "updated_at": admin.get("updated_at")
+        }
