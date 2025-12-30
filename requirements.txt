@@ -1,0 +1,8 @@
+Flask
+flask-cors
+pymongo
+montydb
+PyJWT
+bcrypt
+python-dotenv
+gunicorn
