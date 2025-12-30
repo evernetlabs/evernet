@@ -80,6 +80,25 @@ class AdminService:
             "identifier": identifier
         }
 
+    def add(self, identifier: str, creator: str) -> dict:
+        if self.mongo.count_documents({"identifier": identifier}) > 0:
+            raise Exception(f"Admin {identifier} already exists")
+        
+        password = generate_secret(16)
+
+        self.mongo.insert_one({
+            "identifier": identifier,
+            "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+            "creator": creator,
+            "created_at": current_datetime(),
+            "updated_at": current_datetime()
+        })
+
+        return {
+            "identifier": identifier,
+            "password": password
+        }
+
     @staticmethod
     def to_dict(admin) -> dict:
         return {
