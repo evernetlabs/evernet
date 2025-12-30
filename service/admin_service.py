@@ -1,5 +1,8 @@
+import uuid
 from pymongo.collection import Collection
 import bcrypt
+import jwt
+import time
 
 from service.config_service import ConfigService
 from util.date import current_datetime
@@ -29,3 +32,22 @@ class AdminService:
         return {
             "identifier": identifier
         }
+
+    def get_token(self, identifier: str, password: str) -> dict:
+        admin = self.mongo.find_one({"identifier": identifier})
+
+        if not admin or not bcrypt.checkpw(password.encode(), admin.get("password").encode()):
+            raise Exception("Invalid identifier and password combination")
+
+        vertex_endpoint = self.config_service.get_vertex_endpoint()
+        token = jwt.encode({
+            "sub": admin.get("identifier"),
+            "jti": str(uuid.uuid4()),
+            "iat": int(time.time()),
+            "exp": int(time.time()) + 3600,
+            "type": "admin",
+            "iss": vertex_endpoint,
+            "aud": vertex_endpoint
+        }, key=self.config_service.get_jwt_signing_key(), algorithm="HS256")
+
+        return {"token": token}
