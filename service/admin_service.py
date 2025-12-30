@@ -103,6 +103,26 @@ class AdminService:
         admins = self.mongo.find({}).skip(page * size).limit(size)
         return [self.to_dict(admin) for admin in admins]
 
+    def reset_password(self, identifier: str) -> dict:
+        password = generate_secret(16)
+
+        result = self.mongo.update_one({
+            "identifier": identifier 
+        }, {
+            "$set": {
+                "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+                "updated_at": current_datetime()
+            }
+        })
+
+        if result.matched_count == 0:
+            raise Exception(f"Admin {identifier} not found")
+
+        return {
+            "identifier": identifier,
+            "password": password
+        }
+
     @staticmethod
     def to_dict(admin) -> dict:
         return {

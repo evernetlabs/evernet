@@ -61,3 +61,8 @@ class AdminAPI:
         @authenticate_admin
         def get_admin(_, identifier):
             return self.admin_service.get(identifier)
+
+        @self.app.put("/api/v1/admins/<identifier>/password")
+        @authenticate_admin
+        def reset_admin_password(_, identifier):
+            return self.admin_service.reset_password(identifier)
