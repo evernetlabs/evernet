@@ -32,3 +32,11 @@ class AdminAPI:
         @authenticate_admin
         def get_current_admin_details(admin):
             return self.admin_service.get(admin.get("identifier"))
+
+        @self.app.put("/api/v1/admins/current/password")
+        @authenticate_admin
+        def change_current_admin_password(admin):
+            return self.admin_service.change_password(
+                admin.get("identifier"),
+                required_param("password")
+            )
