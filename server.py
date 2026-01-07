@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 
+from api.config_api import ConfigAPI
 from api.health_check_api import HealthCheckAPI
 from api.admin_api import AdminAPI
 from api.vertex_api import VertexAPI
@@ -33,6 +34,7 @@ vertex_service = VertexService(config_service)
 HealthCheckAPI(app).register()
 AdminAPI(app, admin_service).register()
 VertexAPI(app, vertex_service).register()
+ConfigAPI(app, config_service).register()
 
 
 @app.before_request
@@ -59,5 +61,8 @@ def handle_all_errors(e):
 
 
 if __name__ == '__main__':
-    app.run(host=os.getenv("HOST", "0.0.0.0"), port=int(os.getenv("PORT", "5000")),
-            debug=os.getenv("ENV", "DEV") != "PROD")
+    app.run(
+        host=os.getenv("HOST", "0.0.0.0"),
+        port=int(os.getenv("PORT", "5000")),
+        debug=os.getenv("ENV", "DEV") != "PROD"
+    )
