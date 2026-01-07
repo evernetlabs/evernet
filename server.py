@@ -10,9 +10,11 @@ from flask_cors import CORS
 from api.config_api import ConfigAPI
 from api.health_check_api import HealthCheckAPI
 from api.admin_api import AdminAPI
+from api.node_api import NodeAPI
 from api.vertex_api import VertexAPI
 from service.admin_service import AdminService
 from service.config_service import ConfigService
+from service.node_service import NodeService
 from service.vertex_service import VertexService
 
 app = Flask(__name__)
@@ -30,11 +32,13 @@ else:
 config_service = ConfigService(db.configs)
 admin_service = AdminService(db.admins, config_service)
 vertex_service = VertexService(config_service)
+node_service = NodeService(db.nodes)
 
 HealthCheckAPI(app).register()
 AdminAPI(app, admin_service).register()
 VertexAPI(app, vertex_service).register()
 ConfigAPI(app, config_service).register()
+NodeAPI(app, node_service).register()
 
 
 @app.before_request

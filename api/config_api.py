@@ -14,33 +14,33 @@ class ConfigAPI:
 
         @self.app.put('/api/v1/admins/configs/vertex/endpoint')
         @authenticate_admin
-        def set_vertex_endpoint():
+        def set_vertex_endpoint(_):
             return self.config_service.set_vertex_endpoint(
                 required_param('endpoint')
             )
 
         @self.app.put('/api/v1/admins/configs/vertex/display-name')
         @authenticate_admin
-        def set_vertex_display_name():
+        def set_vertex_display_name(_):
             return self.config_service.set_vertex_display_name(
                 required_param('display_name')
             )
 
         @self.app.put('/api/v1/admins/configs/vertex/description')
         @authenticate_admin
-        def set_vertex_description():
+        def set_vertex_description(_):
             return self.config_service.set_vertex_description(
                 required_param('description')
             )
 
         @self.app.put('/api/v1/admins/configs/jwt-signing-key')
         @authenticate_admin
-        def reset_jwt_signing_key():
+        def reset_jwt_signing_key(_):
             return self.config_service.set_jwt_signing_key(generate_secret(128))
 
         @self.app.put('/api/v1/admins/configs/federation-protocol')
         @authenticate_admin
-        def set_federation_protocol():
+        def set_federation_protocol(_):
             return self.config_service.set_federation_protocol(
                 required_param('protocol')
             )
