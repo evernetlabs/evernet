@@ -1,0 +1,9 @@
+Flask
+flask-cors
+pymongo
+montydb[lmdb]
+lmdb
+PyJWT
+bcrypt
+python-dotenv
+gunicorn

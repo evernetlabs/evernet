@@ -1,0 +1,144 @@
+import uuid
+from pymongo.collection import Collection
+import bcrypt
+import jwt
+import time
+
+from service.config_service import ConfigService
+from util.date import current_datetime
+from util.secret import generate_secret
+
+
+class AdminService:
+
+    def __init__(self, mongo: Collection, config_service: ConfigService) -> None:
+        self.mongo = mongo
+        self.config_service = config_service
+
+    def init(self, identifier: str, password: str, vertex_endpoint: str, vertex_display_name: str,
+             vertex_description: str) -> dict:
+        if self.mongo.count_documents({}) > 0:
+            raise Exception("You are not allowed to perform this action")
+
+        self.mongo.insert_one({
+            "identifier": identifier,
+            "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+            "creator": identifier,
+            "created_at": current_datetime(),
+            "updated_at": current_datetime()
+        })
+
+        self.config_service.init(vertex_endpoint, vertex_display_name, vertex_description, "http", generate_secret(128))
+
+        return {
+            "identifier": identifier
+        }
+
+    def get_token(self, identifier: str, password: str) -> dict:
+        admin = self.mongo.find_one({"identifier": identifier})
+
+        if not admin or not bcrypt.checkpw(password.encode(), admin.get("password").encode()):
+            raise Exception("Invalid identifier and password combination")
+
+        vertex_endpoint = self.config_service.get_vertex_endpoint()
+        token = jwt.encode({
+            "sub": admin.get("identifier"),
+            "jti": str(uuid.uuid4()),
+            "iat": int(time.time()),
+            "exp": int(time.time()) + 3600,
+            "type": "admin",
+            "iss": vertex_endpoint,
+            "aud": vertex_endpoint
+        }, key=self.config_service.get_jwt_signing_key(), algorithm="HS256")
+
+        return {"token": token}
+
+    def get(self, identifier: str) -> dict:
+        admin = self.mongo.find_one({"identifier": identifier})
+
+        if not admin:
+            raise Exception(f"Admin {identifier} not found")
+
+        return self.to_dict(admin)
+
+    def change_password(self, identifier: str, password: str) -> dict:
+        result = self.mongo.update_one(
+            {
+                "identifier": identifier
+            },
+            {
+                "$set": {
+                    "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+                    "updated_at": current_datetime()
+                }
+            }
+        )
+
+        if result.matched_count == 0:
+            raise Exception(f"Admin {identifier} not found")
+
+        return {
+            "identifier": identifier
+        }
+
+    def add(self, identifier: str, creator: str) -> dict:
+        if self.mongo.count_documents({"identifier": identifier}) > 0:
+            raise Exception(f"Admin {identifier} already exists")
+
+        password = generate_secret(16)
+
+        self.mongo.insert_one({
+            "identifier": identifier,
+            "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+            "creator": creator,
+            "created_at": current_datetime(),
+            "updated_at": current_datetime()
+        })
+
+        return {
+            "identifier": identifier,
+            "password": password
+        }
+
+    def fetch(self, page: int = 0, size: int = 50) -> list[dict]:
+        admins = self.mongo.find({}).skip(page * size).limit(size)
+        return [self.to_dict(admin) for admin in admins]
+
+    def reset_password(self, identifier: str) -> dict:
+        password = generate_secret(16)
+
+        result = self.mongo.update_one({
+            "identifier": identifier
+        }, {
+            "$set": {
+                "password": bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(),
+                "updated_at": current_datetime()
+            }
+        })
+
+        if result.matched_count == 0:
+            raise Exception(f"Admin {identifier} not found")
+
+        return {
+            "identifier": identifier,
+            "password": password
+        }
+
+    def delete(self, identifier: str) -> dict:
+        result = self.mongo.delete_one({"identifier": identifier})
+
+        if result.deleted_count == 0:
+            raise Exception(f"Admin {identifier} not found")
+
+        return {
+            "identifier": identifier
+        }
+
+    @staticmethod
+    def to_dict(admin) -> dict:
+        return {
+            "identifier": admin.get("identifier"),
+            "creator": admin.get("creator"),
+            "created_at": admin.get("created_at"),
+            "updated_at": admin.get("updated_at")
+        }
