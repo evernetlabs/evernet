@@ -10,6 +10,7 @@ from api.admin_api import AdminAPI
 from api.config_api import ConfigAPI
 from api.health_check_api import HealthCheckAPI
 from api.node_api import NodeAPI
+from api.structure_api import StructureAPI
 from api.vertex_api import VertexAPI
 from exception.handler import register_exception_handler
 from service.actor_service import ActorService
@@ -18,6 +19,7 @@ from service.config_service import ConfigService
 from service.node_key_service import NodeKeyService
 from service.node_service import NodeService
 from service.remote_node_service import RemoteNodeService
+from service.structure_service import StructureService
 from service.vertex_service import VertexService
 from web.routes import WebRoutes
 
@@ -42,6 +44,7 @@ node_service = NodeService(db.nodes)
 remote_node_service = RemoteNodeService(config_service)
 node_key_service = NodeKeyService(node_service, remote_node_service, config_service)
 actor_service = ActorService(db.actors, node_service, config_service)
+structure_service = StructureService(db.structures, node_service)
 
 HealthCheckAPI(app).register()
 VertexAPI(app, vertex_service).register()
@@ -49,6 +52,7 @@ AdminAPI(app, admin_service).register()
 ConfigAPI(app, config_service).register()
 NodeAPI(app, node_service).register()
 ActorAPI(app, actor_service).register()
+StructureAPI(app, structure_service).register()
 
 WebRoutes(app).register()
 
