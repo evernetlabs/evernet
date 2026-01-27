@@ -1,12 +1,7 @@
-import json
-
 from pymongo.collection import Collection
 
 from exception.types import NotFoundException, ClientException
 from service.structure_service import StructureService
-
-
-from jsonschema import validators, SchemaError
 
 from utils.json_schema import is_valid_json_schema_definition
 from utils.time import current_datetime
