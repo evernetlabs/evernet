@@ -9,6 +9,7 @@ from api.actor_api import ActorAPI
 from api.admin_api import AdminAPI
 from api.config_api import ConfigAPI
 from api.event_api import EventAPI
+from api.function_api import FunctionAPI
 from api.health_check_api import HealthCheckAPI
 from api.node_api import NodeAPI
 from api.property_api import PropertyAPI
@@ -21,6 +22,7 @@ from service.actor_service import ActorService
 from service.admin_service import AdminService
 from service.config_service import ConfigService
 from service.event_service import EventService
+from service.function_service import FunctionService
 from service.node_key_service import NodeKeyService
 from service.node_service import NodeService
 from service.property_service import PropertyService
@@ -59,6 +61,7 @@ relationship_service = RelationshipService(db.relationships, structure_service, 
 state_service = StateService(db.states, structure_service)
 property_service = PropertyService(db.properties, structure_service)
 event_service = EventService(db.events, structure_service)
+function_service = FunctionService(db.functions, structure_service)
 
 HealthCheckAPI(app).register()
 VertexAPI(app, vertex_service).register()
@@ -71,6 +74,7 @@ RelationshipAPI(app, relationship_service).register()
 StateAPI(app, state_service).register()
 PropertyAPI(app, property_service).register()
 EventAPI(app, event_service).register()
+FunctionAPI(app, function_service).register()
 
 WebRoutes(app).register()
 
