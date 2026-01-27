@@ -10,6 +10,7 @@ from api.admin_api import AdminAPI
 from api.config_api import ConfigAPI
 from api.health_check_api import HealthCheckAPI
 from api.node_api import NodeAPI
+from api.property_api import PropertyAPI
 from api.relationship_api import RelationshipAPI
 from api.state_api import StateAPI
 from api.structure_api import StructureAPI
@@ -20,6 +21,7 @@ from service.admin_service import AdminService
 from service.config_service import ConfigService
 from service.node_key_service import NodeKeyService
 from service.node_service import NodeService
+from service.property_service import PropertyService
 from service.relationship_service import RelationshipService
 from service.remote_node_service import RemoteNodeService
 from service.state_service import StateService
@@ -53,6 +55,7 @@ structure_service = StructureService(db.structures, node_service, config_service
 structure_clone_service = StructureCloneService(structure_service, config_service)
 relationship_service = RelationshipService(db.relationships, structure_service, structure_clone_service)
 state_service = StateService(db.states, structure_service)
+property_service = PropertyService(db.properties, structure_service)
 
 HealthCheckAPI(app).register()
 VertexAPI(app, vertex_service).register()
@@ -63,6 +66,7 @@ ActorAPI(app, actor_service).register()
 StructureAPI(app, structure_service).register()
 RelationshipAPI(app, relationship_service).register()
 StateAPI(app, state_service).register()
+PropertyAPI(app, property_service).register()
 
 WebRoutes(app).register()
 
