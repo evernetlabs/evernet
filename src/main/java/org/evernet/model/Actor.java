@@ -20,24 +20,37 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
 @Entity
-@Table(
-        name = "admins",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {
-                        "identifier"
-                }, name = "admin_identifier")
-        }
-)
-public class Admin {
+@Table(name = "actors", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "signingPublicKey"
+        }, name = "actor_signing_public_key"),
+        @UniqueConstraint(columnNames = {
+                "fingerprint"
+        }, name = "actor_fingerprint")
+})
+public class Actor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String identifier;
+    private String fingerprint;
+
+    private String signingPublicKey;
+
+    private String displayName;
+
+    private String type;
+
+    private String description;
+
+    private String alias;
 
     @JsonIgnore
     private String password;
+
+    @JsonIgnore
+    private String encryptedSigningPrivateKey;
 
     private String creator;
 
