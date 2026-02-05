@@ -25,8 +25,8 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
                 "signingPublicKey"
         }, name = "actor_signing_public_key"),
         @UniqueConstraint(columnNames = {
-                "fingerprint"
-        }, name = "actor_fingerprint")
+                "alias"
+        }, name = "actor_alias")
 })
 public class Actor {
 
@@ -34,15 +34,7 @@ public class Actor {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private String fingerprint;
-
     private String signingPublicKey;
-
-    private String displayName;
-
-    private String type;
-
-    private String description;
 
     private String alias;
 
