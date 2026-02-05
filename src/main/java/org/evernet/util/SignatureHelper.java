@@ -9,7 +9,6 @@ import java.security.Signature;
 @UtilityClass
 public class SignatureHelper {
 
-
     public byte[] sign(byte[] data, PrivateKey privateKey) throws Exception {
         Signature sig = Signature.getInstance("Ed25519");
         sig.initSign(privateKey);

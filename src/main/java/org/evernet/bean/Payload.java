@@ -16,7 +16,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
-public class Fingerprint {
+public class Payload<T> {
 
     @Data
     @Builder
@@ -24,7 +24,7 @@ public class Fingerprint {
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(NON_NULL)
-    public static class Actor {
+    public static class ActorDetails {
         @JsonProperty("n")
         private String displayName;
         @JsonProperty("d")
@@ -39,16 +39,19 @@ public class Fingerprint {
     @AllArgsConstructor
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(NON_NULL)
-    public static class Payload {
+    public static class Actor {
         @JsonProperty("k")
         private String signingPublicKey;
-        @JsonProperty("a")
-        private Actor actor;
+        @JsonProperty("d")
+        private ActorDetails details;
     }
 
-    @JsonProperty("p")
-    private Payload payload;
+    @JsonProperty("a")
+    private Actor actor;
 
     @JsonProperty("s")
     private String signature;
+
+    @JsonProperty("d")
+    private T data;
 }
