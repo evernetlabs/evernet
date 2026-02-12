@@ -5,7 +5,7 @@ from functools import wraps
 from exception.errors import AuthorizationError
 
 
-def authenticate_user(f):
+def authenticate_admin(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None

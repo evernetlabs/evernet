@@ -6,7 +6,7 @@ import bcrypt
 import jwt
 from montydb.collection import MontyCollection
 
-from exception.errors import AuthorizationError
+from exception.errors import AuthorizationError, NotFoundError
 from service.config_service import ConfigService
 from util.secret import generate_secret
 
@@ -59,4 +59,23 @@ class AdminService:
 
         return {
             "token": token
+        }
+
+    def get(self, username: str) -> dict:
+        admin = self.collection.find_one({
+            "username": username
+        })
+
+        if not admin:
+            raise NotFoundError(f"Admin {username} not found")
+
+        return self.to_dict(admin)
+
+    @staticmethod
+    def to_dict(admin: dict) -> dict:
+        return {
+            "username": admin.get("username"),
+            "creator": admin.get("creator"),
+            "created_at": admin.get("created_at"),
+            "updated_at": admin.get("updated_at")
         }
