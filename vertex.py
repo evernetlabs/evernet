@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request
+from flask import Flask
 from montydb import set_storage, MontyClient
 
 from api.admin_api import AdminAPI
@@ -17,11 +17,11 @@ database = database_client.get_database(os.getenv("DATABASE_NAME", "vertex"))
 
 app = Flask(__name__)
 register_flask_exception_handler(app)
-setup_api(app)
 
 config_service = ConfigService(database.get_collection("configs"))
 admin_service = AdminService(database.get_collection("admins"), config_service)
 
+setup_api(app, config_service)
 HealthCheckAPI(app).register()
 AdminAPI(app, admin_service).register()
 

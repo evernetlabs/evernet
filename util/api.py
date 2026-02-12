@@ -1,10 +1,13 @@
 from flask import g, request, Flask
 
+from service.config_service import ConfigService
 
-def setup_api(app: Flask):
+
+def setup_api(app: Flask, config_service: ConfigService):
     @app.before_request
     def before_request():
         g.request_body = request.get_json(force=True, silent=True)
+        g.config_service = config_service
 
 
 def required_param(key: str, data_type=str):

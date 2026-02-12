@@ -2,3 +2,4 @@ flask
 montydb[lmdb]
 lmdb
 bcrypt
+PyJWT
