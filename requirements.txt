@@ -1,0 +1,4 @@
+flask
+montydb[lmdb]
+lmdb
+bcrypt
