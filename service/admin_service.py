@@ -71,6 +71,35 @@ class AdminService:
 
         return self.to_dict(admin)
 
+    def change_password(self, username: str, password: str) -> dict:
+        result = self.collection.update_one({
+            "username": username
+        }, {
+            "$set": {
+                "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
+                "updated_at": datetime.datetime.now(tz=datetime.timezone.utc)
+            }
+        })
+
+        if result.matched_count == 0:
+            raise NotFoundError(f"Admin {username} not found")
+
+        return {
+            "username": username
+        }
+
+    def add(self):
+        pass
+
+    def fetch(self):
+        pass
+
+    def delete(self):
+        pass
+
+    def reset_password(self):
+        pass
+
     @staticmethod
     def to_dict(admin: dict) -> dict:
         return {
