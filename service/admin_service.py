@@ -1,4 +1,3 @@
-import datetime
 import time
 import uuid
 
@@ -9,6 +8,7 @@ from montydb.collection import MontyCollection
 from exception.errors import AuthorizationError, NotFoundError
 from service.config_service import ConfigService
 from util.secret import generate_secret
+from util.time import current_datetime
 
 
 class AdminService:
@@ -27,8 +27,8 @@ class AdminService:
             "username": username,
             "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
             "creator": username,
-            "created_at": datetime.datetime.now(tz=datetime.timezone.utc),
-            "updated_at": datetime.datetime.now(tz=datetime.timezone.utc)
+            "created_at": current_datetime(),
+            "updated_at": current_datetime()
         })
 
         self.config_service.init(vertex_endpoint, vertex_display_name, vertex_description, generate_secret(128), "http")
@@ -77,7 +77,7 @@ class AdminService:
         }, {
             "$set": {
                 "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
-                "updated_at": datetime.datetime.now(tz=datetime.timezone.utc)
+                "updated_at": current_datetime()
             }
         })
 

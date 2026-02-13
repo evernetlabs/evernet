@@ -1,8 +1,7 @@
-import datetime
-
 from montydb.collection import MontyCollection
 
 from exception.errors import ClientError
+from util.time import current_datetime
 
 
 class ConfigService:
@@ -15,11 +14,11 @@ class ConfigService:
         }, {
             "$set": {
                 "value": value,
-                "updated_at": datetime.datetime.now(tz=datetime.UTC)
+                "updated_at": current_datetime()
             },
             "$setOnInsert": {
                 "key": key,
-                "created_at": datetime.datetime.now(tz=datetime.UTC)
+                "created_at": current_datetime()
             }
         }, upsert=True)
 
@@ -40,8 +39,8 @@ class ConfigService:
             "$setOnInsert": {
                 "key": key,
                 "value": value,
-                "created_at": datetime.datetime.now(tz=datetime.UTC),
-                "updated_at": datetime.datetime.now(tz=datetime.UTC)
+                "created_at": current_datetime(),
+                "updated_at": current_datetime()
             }
         }, upsert=True)
 
