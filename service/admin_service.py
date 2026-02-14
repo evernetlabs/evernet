@@ -5,7 +5,7 @@ import bcrypt
 import jwt
 from montydb.collection import MontyCollection
 
-from exception.errors import AuthorizationError, NotFoundError
+from exception.errors import AuthorizationError, NotFoundError, ClientError
 from service.config_service import ConfigService
 from util.secret import generate_secret
 from util.time import current_datetime
@@ -88,8 +88,25 @@ class AdminService:
             "username": username
         }
 
-    def add(self):
-        pass
+    def add(self, username: str, creator: str) -> dict:
+        if self.collection.count_documents({
+            "username": username
+        }) > 0:
+            raise ClientError(f"Admin {username} already exists")
+
+        password = generate_secret(16)
+        self.collection.insert_one({
+            "username": username,
+            "password": bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8"),
+            "creator": creator,
+            "created_at": current_datetime(),
+            "updated_at": current_datetime()
+        })
+
+        return {
+            "username": username,
+            "password": password
+        }
 
     def fetch(self):
         pass
