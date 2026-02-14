@@ -2,7 +2,7 @@ from flask import request, g
 import jwt
 from functools import wraps
 
-from exception.errors import AuthorizationError
+from exception.errors import AuthorizationError, AuthenticationError
 
 
 def authenticate_admin(f):
@@ -16,7 +16,7 @@ def authenticate_admin(f):
                 token = auth_header.split(' ')[1]
 
         if not token:
-            raise Exception("Invalid access token")
+            raise AuthenticationError("Invalid access token")
 
         try:
             vertex_endpoint = g.config_service.get_vertex_endpoint()
@@ -29,14 +29,14 @@ def authenticate_admin(f):
             )
 
             if data["type"] != "admin":
-                raise Exception("Invalid access token")
+                raise AuthenticationError("Invalid access token")
 
             current_admin = {
                 "username": data["sub"],
             }
 
         except Exception as e:
-            raise AuthorizationError(f"Invalid access token, {str(e)}")
+            raise AuthenticationError(f"Invalid access token, {str(e)}")
 
         return f(current_admin, *args, **kwargs)
 
