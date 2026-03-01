@@ -1,0 +1,18 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Evernet</title>
+    <link th:if="${@environment.getActiveProfiles()[0] == 'prod'}"  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/5.3.8/zephyr/bootstrap.min.css" integrity="sha512-4FRwuqwye2+ull0yCscDHzWO53SpLta+o/mNoQP9T7wHO49srF7IdkMxWrwgLWJheznqJkdfJvLXPcrwPC2eRg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link th:unless="${@environment.getActiveProfiles()[0] == 'prod'}"  rel="stylesheet" href="/bootstrap.min.css" />
+    <link th:if="${@environment.getActiveProfiles()[0] == 'prod'}"  rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link th:unless="${@environment.getActiveProfiles()[0] == 'prod'}"  rel="stylesheet" href="/select2.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/app.css">
+    <script type="text/javascript">
+        if (localStorage.getItem("token")) {
+            window.location.href = "/home";
+        }
+    </script>
+</head>
