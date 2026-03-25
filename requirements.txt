@@ -1,0 +1,9 @@
+Flask
+flask-cors
+pymongo
+PyJWT
+bcrypt
+python-dotenv
+gunicorn
+jsonschema
+py-expression-eval
