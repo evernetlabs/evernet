@@ -47,6 +47,8 @@ public class User {
 
     private String nodeIdentifier;
 
+    private String creator;
+
     @CreatedDate
     private Instant createdAt;
 
