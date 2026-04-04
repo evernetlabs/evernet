@@ -87,4 +87,8 @@ public class NodeService {
         node.setOpen(request.getOpen());
         return nodeRepository.save(node);
     }
+
+    public Boolean exists(String identifier) {
+        return nodeRepository.existsByIdentifier(identifier);
+    }
 }

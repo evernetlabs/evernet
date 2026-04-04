@@ -34,4 +34,8 @@ public class NodeAddress {
     public String toString() {
         return String.format("%s/%s", vertexEndpoint, identifier);
     }
+
+    public Boolean equals(NodeAddress anotherNodeAddress) {
+        return this.identifier.equals(anotherNodeAddress.getIdentifier()) && this.vertexEndpoint.equals(anotherNodeAddress.getVertexEndpoint());
+    }
 }

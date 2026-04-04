@@ -1,0 +1,18 @@
+package xyz.evernet.enums;
+
+public enum TriggerType {
+
+    EVENT_RAISED,
+
+    PROPERTY_UPDATED,
+
+    RELATIONSHIP_ADDED,
+
+    RELATIONSHIP_DELETED,
+
+    RELATIONSHIP_DATA_UPDATED,
+
+    RELATIONSHIP_EVENT_RAISED,
+
+    RELATIONSHIP_PROPERTY_UPDATED
+}

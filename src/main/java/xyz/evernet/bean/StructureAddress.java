@@ -15,25 +15,26 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
-public class UserAddress {
+public class StructureAddress {
 
-    private String username;
+    private String identifier;
 
     private NodeAddress nodeAddress;
 
-    public static UserAddress fromString(String s) {
+
+    public static StructureAddress fromString(String s) {
         String[] components = s.split("/");
         if (components.length != 3) {
-            throw new IllegalArgumentException(String.format("Invalid user address %s", s));
+            throw new IllegalArgumentException(String.format("Invalid structure address %s", s));
         }
 
-        return UserAddress.builder()
-                .username(components[2])
+        return StructureAddress.builder()
+                .identifier(components[2])
                 .nodeAddress(NodeAddress.builder().vertexEndpoint(components[0]).identifier(components[1]).build())
                 .build();
     }
 
     public String toString() {
-        return String.format("%s/%s", nodeAddress.toString(), username);
+        return String.format("%s/%s", nodeAddress.toString(), identifier);
     }
 }
