@@ -9,7 +9,6 @@ import xyz.evernet.model.Node;
 import xyz.evernet.model.Structure;
 import xyz.evernet.repository.NodeRepository;
 import xyz.evernet.request.NodeCreationRequest;
-import xyz.evernet.request.NodeFederationService;
 
 import java.util.HashMap;
 import java.util.Map;

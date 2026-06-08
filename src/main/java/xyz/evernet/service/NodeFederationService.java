@@ -1,4 +1,4 @@
-package xyz.evernet.request;
+package xyz.evernet.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
