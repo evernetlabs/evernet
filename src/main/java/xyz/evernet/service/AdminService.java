@@ -11,8 +11,12 @@ import xyz.evernet.repository.AdminRepository;
 import xyz.evernet.request.AdminInitRequest;
 import xyz.evernet.request.AdminTokenRequest;
 import xyz.evernet.response.AdminTokenResponse;
+import xyz.evernet.util.Ed25519KeyHelper;
 import xyz.evernet.util.Password;
 import xyz.evernet.util.Random;
+
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +27,7 @@ public class AdminService {
     private final ConfigService configService;
     private final Jwt jwt;
 
-    public Admin init(AdminInitRequest request) {
+    public Admin init(AdminInitRequest request) throws NoSuchAlgorithmException {
         if (adminRepository.count() != 0) {
             throw new NotAllowedException();
         }
@@ -35,7 +39,17 @@ public class AdminService {
                 .build();
 
         admin = adminRepository.save(admin);
-        configService.init(request.getVertex(), "http", Random.generateRandomString(128));
+
+        KeyPair keyPair = Ed25519KeyHelper.generateKeyPair();
+
+        configService.init(
+                request.getVertex(),
+                "http",
+                Random.generateRandomString(128),
+                Ed25519KeyHelper.privateKeyToString(keyPair.getPrivate()),
+                Ed25519KeyHelper.publicKeyToString(keyPair.getPublic())
+        );
+
         return admin;
     }
 

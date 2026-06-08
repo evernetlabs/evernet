@@ -18,16 +18,20 @@ public class ConfigService {
     static final String VERTEX_DISPLAY_NAME = "vertexDisplayName";
     static final String VERTEX_DESCRIPTION = "vertexDescription";
     static final String FEDERATION_PROTOCOL = "federationProtocol";
+    static final String SIGNING_PRIVATE_KEY = "signingPrivateKey";
+    static final String SIGNING_PUBLIC_KEY = "signingPublicKey";
 
     private final ConfigRepository configRepository;
 
-    public void init(Vertex vertex, String federationProtocol, String jwtSigningKey) {
+    public void init(Vertex vertex, String federationProtocol, String jwtSigningKey, String signingPrivateKey, String signingPublicKey) {
         List<Config> configs = List.of(
                 Config.builder().key(JWT_SIGNING_KEY).value(jwtSigningKey).build(),
                 Config.builder().key(VERTEX_ENDPOINT).value(vertex.getEndpoint()).build(),
                 Config.builder().key(VERTEX_DISPLAY_NAME).value(vertex.getDisplayName()).build(),
                 Config.builder().key(VERTEX_DESCRIPTION).value(vertex.getDescription()).build(),
-                Config.builder().key(FEDERATION_PROTOCOL).value(federationProtocol).build()
+                Config.builder().key(FEDERATION_PROTOCOL).value(federationProtocol).build(),
+                Config.builder().key(SIGNING_PRIVATE_KEY).value(signingPrivateKey).build(),
+                Config.builder().key(SIGNING_PUBLIC_KEY).value(signingPublicKey).build()
         );
 
         configRepository.saveAll(configs);

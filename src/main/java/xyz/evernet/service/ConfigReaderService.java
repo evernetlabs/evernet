@@ -24,4 +24,8 @@ public class ConfigReaderService {
     public String getJwtSigningKey() {
         return configService.get(ConfigService.JWT_SIGNING_KEY, "secret");
     }
+
+    public String getSigningPublicKey() {
+        return configService.get(ConfigService.SIGNING_PUBLIC_KEY, "secret");
+    }
 }
