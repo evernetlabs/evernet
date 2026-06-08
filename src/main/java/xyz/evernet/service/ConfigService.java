@@ -1,0 +1,46 @@
+package xyz.evernet.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import xyz.evernet.bean.Vertex;
+import xyz.evernet.model.Config;
+import xyz.evernet.repository.ConfigRepository;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class ConfigService {
+
+    static final String JWT_SIGNING_KEY = "jwtSigningKey";
+    static final String VERTEX_ENDPOINT = "vertexEndpoint";
+    static final String VERTEX_DISPLAY_NAME = "vertexDisplayName";
+    static final String VERTEX_DESCRIPTION = "vertexDescription";
+    static final String FEDERATION_PROTOCOL = "federationProtocol";
+
+    private final ConfigRepository configRepository;
+
+    public void init(Vertex vertex, String federationProtocol, String jwtSigningKey) {
+        List<Config> configs = List.of(
+                Config.builder().key(JWT_SIGNING_KEY).value(jwtSigningKey).build(),
+                Config.builder().key(VERTEX_ENDPOINT).value(vertex.getEndpoint()).build(),
+                Config.builder().key(VERTEX_DISPLAY_NAME).value(vertex.getDisplayName()).build(),
+                Config.builder().key(VERTEX_DESCRIPTION).value(vertex.getDescription()).build(),
+                Config.builder().key(FEDERATION_PROTOCOL).value(federationProtocol).build()
+        );
+
+        configRepository.saveAll(configs);
+    }
+
+    @Cacheable("configCache")
+    public String get(String key, String defaultValue) {
+        Config config = configRepository.findByKey(key);
+
+        if (config == null) {
+            return defaultValue;
+        }
+
+        return config.getValue();
+    }
+}

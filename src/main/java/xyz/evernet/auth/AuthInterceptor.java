@@ -1,5 +1,6 @@
 package xyz.evernet.auth;
 
+import org.jspecify.annotations.NonNull;
 import xyz.evernet.auth.authenticator.Authenticator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +25,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         authenticators.forEach(authenticator -> this.authenticatorMap.put(authenticator.getType(), authenticator));
     }
 
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull Object handler) {
         if (handler instanceof HandlerMethod) {
             Object handlerBean = ((HandlerMethod) handler).getBean();
 

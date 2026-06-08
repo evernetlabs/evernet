@@ -1,8 +1,0 @@
-{
-  "properties": [
-    {
-      "name": "evernet.jwt.secret.key",
-      "type": "java.lang.String",
-      "description": "JWT signing key."
-  }
-] }

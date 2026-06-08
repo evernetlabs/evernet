@@ -1,8 +1,6 @@
 package xyz.evernet.auth;
 
-import xyz.evernet.exception.NotAllowedException;
-
-public class AuthenticatedUserController {
+public class AuthenticatedAdminController {
 
     public AuthenticatedUser getUser() {
         return ThreadLocalWrapper.getUser();

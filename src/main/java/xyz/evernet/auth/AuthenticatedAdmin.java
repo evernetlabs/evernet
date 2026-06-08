@@ -11,7 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AuthenticatedUser implements Serializable {
+public class AuthenticatedAdmin implements Serializable {
 
     private String username;
 }

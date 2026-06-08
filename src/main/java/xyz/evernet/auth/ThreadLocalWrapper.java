@@ -4,8 +4,11 @@ public class ThreadLocalWrapper {
 
     private static final ThreadLocal<AuthenticatedUser> userContext;
 
+    private static final ThreadLocal<AuthenticatedAdmin> adminContext;
+
     static {
         userContext = new ThreadLocal<>();
+        adminContext = new ThreadLocal<>();
     }
 
     public static AuthenticatedUser getUser() {
@@ -14,5 +17,13 @@ public class ThreadLocalWrapper {
 
     public static void setUser(AuthenticatedUser user) {
         userContext.set(user);
+    }
+
+    public static AuthenticatedAdmin getAdmin() {
+        return adminContext.get();
+    }
+
+    public static void setAdmin(AuthenticatedAdmin admin) {
+        adminContext.set(admin);
     }
 }

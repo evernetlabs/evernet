@@ -4,8 +4,8 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import xyz.evernet.service.ConfigReaderService;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
@@ -15,43 +15,75 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class Jwt {
 
-    private static final String ORGANIZATION_ID_CLAIM = "organizationId";
-    private static final String ADMIN_CLAIM = "admin";
     private static final String TOKEN_TYPE_CLAIM = "type";
     private static final String TOKEN_TYPE_USER = "USER";
-    private static final String ISSUER = "evernet";
-    private static final String AUDIENCE = "evernet";
+    private static final String TOKEN_TYPE_ADMIN = "ADMIN";
 
-    @Value("${evernet.jwt.secret.key}")
-    private String jwtSecretKey;
+    private final ConfigReaderService configReaderService;
 
     public AuthenticatedUser getUser(String token) {
+        String vertexEndpoint = configReaderService.getVertexEndpoint();
+        String jwtSigningKey = configReaderService.getJwtSigningKey();
+
         Claims claims = Jwts.parser()
-                .verifyWith(Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8)))
+                .verifyWith(Keys.hmacShaKeyFor(jwtSigningKey.getBytes(StandardCharsets.UTF_8)))
                 .require(TOKEN_TYPE_CLAIM, TOKEN_TYPE_USER)
-                .requireAudience(AUDIENCE)
-                .requireIssuer(ISSUER)
+                .requireAudience(vertexEndpoint)
+                .requireIssuer(vertexEndpoint)
                 .build()
                 .parseSignedClaims(token).getPayload();
 
         return AuthenticatedUser.builder()
-                .id(claims.getSubject())
-                .organizationId((String) claims.getOrDefault("organizationId", ""))
-                .admin((Boolean) claims.getOrDefault("admin", false))
+                .username(claims.getSubject())
                 .build();
     }
 
     public String getUserToken(AuthenticatedUser user) {
-        return Jwts.builder().subject(user.getId())
+        String vertexEndpoint = configReaderService.getVertexEndpoint();
+        String jwtSigningKey = configReaderService.getJwtSigningKey();
+
+        return Jwts.builder().subject(user.getUsername())
                 .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 30 * 24 * 60 * 60 * 1000L))
                 .id(UUID.randomUUID().toString())
                 .claim(TOKEN_TYPE_CLAIM, TOKEN_TYPE_USER)
-                .claim(ORGANIZATION_ID_CLAIM, user.getOrganizationId())
-                .claim(ADMIN_CLAIM, user.getAdmin())
-                .issuer(ISSUER)
-                .audience().add(AUDIENCE)
+                .issuer(vertexEndpoint)
+                .audience().add(vertexEndpoint)
                 .and()
-                .signWith(Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8)))
+                .signWith(Keys.hmacShaKeyFor(jwtSigningKey.getBytes(StandardCharsets.UTF_8)))
+                .compact();
+    }
+
+    public AuthenticatedAdmin getAdmin(String token) {
+        String vertexEndpoint = configReaderService.getVertexEndpoint();
+        String jwtSigningKey = configReaderService.getJwtSigningKey();
+
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(jwtSigningKey.getBytes(StandardCharsets.UTF_8)))
+                .require(TOKEN_TYPE_CLAIM, TOKEN_TYPE_ADMIN)
+                .requireAudience(vertexEndpoint)
+                .requireIssuer(vertexEndpoint)
+                .build()
+                .parseSignedClaims(token).getPayload();
+
+        return AuthenticatedAdmin.builder()
+                .username(claims.getSubject())
+                .build();
+    }
+
+    public String getAdminToken(AuthenticatedAdmin admin) {
+        String vertexEndpoint = configReaderService.getVertexEndpoint();
+        String jwtSigningKey = configReaderService.getJwtSigningKey();
+
+        return Jwts.builder().subject(admin.getUsername())
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000L))
+                .id(UUID.randomUUID().toString())
+                .claim(TOKEN_TYPE_CLAIM, TOKEN_TYPE_ADMIN)
+                .issuer(vertexEndpoint)
+                .audience().add(vertexEndpoint)
+                .and()
+                .signWith(Keys.hmacShaKeyFor(jwtSigningKey.getBytes(StandardCharsets.UTF_8)))
                 .compact();
     }
 }
