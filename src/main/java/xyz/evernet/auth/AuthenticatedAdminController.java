@@ -2,11 +2,11 @@ package xyz.evernet.auth;
 
 public class AuthenticatedAdminController {
 
-    public AuthenticatedUser getUser() {
+    public AuthenticatedUser getAdmin() {
         return ThreadLocalWrapper.getUser();
     }
 
     public String getUsername() {
-        return getUser().getUsername();
+        return getAdmin().getUsername();
     }
 }
