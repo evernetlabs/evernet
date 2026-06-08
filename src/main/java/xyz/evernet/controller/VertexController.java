@@ -24,7 +24,7 @@ public class VertexController {
                 .build();
     }
 
-    @GetMapping("/vertex/signing-public-key")
+    @GetMapping("/configs/signing-public-key")
     public VertexSigningPublicKeyResponse getSigningPublicKey() {
         return VertexSigningPublicKeyResponse
                 .builder()

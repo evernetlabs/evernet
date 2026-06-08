@@ -37,6 +37,33 @@ public class ConfigService {
         configRepository.saveAll(configs);
     }
 
+    public void setVertex(Vertex vertex) {
+        set(VERTEX_ENDPOINT, vertex.getEndpoint());
+        set(VERTEX_DISPLAY_NAME, vertex.getDisplayName());
+        set(VERTEX_DESCRIPTION, vertex.getDescription());
+    }
+
+    public void setJwtSigningKey(String jwtSigningKey) {
+        set(JWT_SIGNING_KEY, jwtSigningKey);
+    }
+
+    public void setFederationProtocol(String federationProtocol) {
+        set(FEDERATION_PROTOCOL, federationProtocol);
+    }
+
+    public void setSigningKeys(String signingPrivateKey, String signingPublicKey) {
+        set(SIGNING_PRIVATE_KEY, signingPrivateKey);
+        set(SIGNING_PUBLIC_KEY, signingPublicKey);
+    }
+
+    public void set(String key, String value) {
+        Config config = configRepository.findByKey(key);
+        if (config != null) {
+            config.setValue(value);
+            configRepository.save(config);
+        }
+    }
+
     @Cacheable("configCache")
     public String get(String key, String defaultValue) {
         Config config = configRepository.findByKey(key);

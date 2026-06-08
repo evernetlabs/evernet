@@ -12,6 +12,8 @@ import xyz.evernet.request.AdminTokenRequest;
 import xyz.evernet.response.AdminTokenResponse;
 import xyz.evernet.service.AdminService;
 
+import java.security.NoSuchAlgorithmException;
+
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class AdminAccountController {
     private final AdminService adminService;
 
     @PostMapping("/admins/init")
-    public Admin init(@Valid @RequestBody AdminInitRequest request) {
+    public Admin init(@Valid @RequestBody AdminInitRequest request) throws NoSuchAlgorithmException {
         return adminService.init(request);
     }
 
