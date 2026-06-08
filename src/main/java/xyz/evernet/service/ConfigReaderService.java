@@ -13,6 +13,14 @@ public class ConfigReaderService {
         return configService.get(ConfigService.VERTEX_ENDPOINT, "localhost:3000");
     }
 
+    public String getVertexDisplayName() {
+        return configService.get(ConfigService.VERTEX_DISPLAY_NAME, "Vertex");
+    }
+
+    public String getVertexDescription() {
+        return configService.get(ConfigService.VERTEX_DESCRIPTION, "Vertex");
+    }
+
     public String getJwtSigningKey() {
         return configService.get(ConfigService.JWT_SIGNING_KEY, "secret");
     }
