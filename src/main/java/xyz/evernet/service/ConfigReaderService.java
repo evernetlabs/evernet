@@ -28,4 +28,8 @@ public class ConfigReaderService {
     public String getSigningPublicKey() {
         return configService.get(ConfigService.SIGNING_PUBLIC_KEY, "secret");
     }
+
+    public String getFederationProtocol() {
+        return configService.get(ConfigService.FEDERATION_PROTOCOL, "http");
+    }
 }
