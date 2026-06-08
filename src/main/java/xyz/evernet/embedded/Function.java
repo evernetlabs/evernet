@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Data
@@ -27,4 +29,6 @@ public class Function {
     private String inputSchema;
 
     private String outputSchema;
+
+    private Set<String> allowedRoles;
 }

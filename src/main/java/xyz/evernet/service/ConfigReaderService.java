@@ -29,6 +29,10 @@ public class ConfigReaderService {
         return configService.get(ConfigService.SIGNING_PUBLIC_KEY, "secret");
     }
 
+    public String getSigningPrivateKey() {
+        return configService.get(ConfigService.SIGNING_PRIVATE_KEY, "secret");
+    }
+
     public String getFederationProtocol() {
         return configService.get(ConfigService.FEDERATION_PROTOCOL, "http");
     }

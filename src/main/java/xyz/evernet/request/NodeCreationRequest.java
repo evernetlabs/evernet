@@ -1,4 +1,4 @@
-package xyz.evernet.embedded;
+package xyz.evernet.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Map;
 import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -18,15 +19,12 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
-public class Property {
+public class NodeCreationRequest {
 
-    @NotBlank(message = "Property display name is required")
-    private String displayName;
+    @NotBlank(message = "Structure address is required")
+    private String structureAddress;
 
-    @NotBlank(message = "Property description is required")
-    private String description;
+    private Map<String, Object> properties;
 
-    private String schema;
-
-    private Set<String> allowedRoles;
+    private Map<String, Set<String>> users;
 }
