@@ -8,7 +8,7 @@ import java.util.Set;
 public class NodeCreationFederationHandler implements FederationHandler<NodeCreationEvent> {
 
     @Override
-    public void transmit(NodeCreationEvent event, String requesterAddress, String sourceVertexEndpoint, String targetVertexEndpoint, Set<String> targetUserAddresses, String federationToken) {
+    public void transmit(NodeCreationEvent event, String requesterAddress, String sourceVertexEndpoint, String targetVertexEndpoint, Set<String> targetUserAddresses) {
 
     }
 

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import xyz.evernet.auth.Jwt;
 import xyz.evernet.bean.UserAddress;
 import xyz.evernet.federation.FederationHandler;
 import xyz.evernet.federation.FederationHandlerFactory;
@@ -20,8 +19,6 @@ public class NodeFederationService {
     private final FederationHandlerFactory federationHandlerFactory;
 
     private final ConfigReaderService configReaderService;
-
-    private final Jwt jwt;
 
     @Async
     public <E> void transmitEvent(Node node, E event, String requesterAddress) throws Exception {
@@ -65,15 +62,37 @@ public class NodeFederationService {
                                 requesterAddress,
                                 currentVertexEndpoint,
                                 entry.getKey(),
-                                entry.getValue(),
-                                jwt.getVertexToken(entry.getKey())
+                                entry.getValue()
                         );
-
             }
         }
     }
 
+    @Async
     public <E> void receiveEvent(E event, Set<String> targetUserAddresses, String sourceVertexEndpoint, String requesterAddress) {
+        UserAddress requesterAddressObj = UserAddress.from(requesterAddress);
 
+        if (!requesterAddressObj.getVertexEndpoint().equals(sourceVertexEndpoint)) {
+            return;
+        }
+
+        String currentVertexEndpoint = configReaderService.getVertexEndpoint();
+
+        Set<String> filteredTargetUserAddresses = new HashSet<>();
+
+        for (String targetUserAddressStr : targetUserAddresses) {
+            UserAddress targetUserAddress = UserAddress.from(targetUserAddressStr);
+
+            if (targetUserAddress.getVertexEndpoint().equals(currentVertexEndpoint)) {
+                filteredTargetUserAddresses.add(targetUserAddressStr);
+            }
+        }
+
+        if (CollectionUtils.isEmpty(filteredTargetUserAddresses)) {
+            return;
+        }
+
+        FederationHandler<E> federationHandler = (FederationHandler<E>) federationHandlerFactory.getHandler(event.getClass());
+        federationHandler.receive(event, requesterAddress, filteredTargetUserAddresses);
     }
 }

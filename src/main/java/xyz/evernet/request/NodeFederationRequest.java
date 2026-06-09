@@ -1,4 +1,4 @@
-package xyz.evernet.federation.event;
+package xyz.evernet.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,10 +21,10 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
-public class FederationEventEnvelope<E> {
+public class NodeFederationRequest {
 
     @NotNull(message = "Event data is required")
-    private E event;
+    private Object event;
 
     @NotNull(message = "Event type is required")
     private NodeEventType eventType;

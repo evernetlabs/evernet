@@ -8,8 +8,8 @@ public class Json {
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    public Object decode(String s, Class<?> c) {
-        Object u = null;
+    public <T> T decode(String s, Class<T> c) {
+        T u = null;
 
         if (s != null) {
             try {
