@@ -1,19 +1,15 @@
-package xyz.evernet.request;
+package xyz.evernet.embedded;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import xyz.evernet.embedded.Event;
-import xyz.evernet.embedded.Function;
-import xyz.evernet.embedded.Property;
-import xyz.evernet.embedded.Relationship;
+import xyz.evernet.enums.RelationshipType;
 
-import java.util.Map;
 import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
@@ -24,10 +20,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
-public class StructureCreationRequest {
-
-    @NotBlank(message = "Identifier is required")
-    private String identifier;
+public class Relationship {
 
     @NotBlank(message = "Display name is required")
     private String displayName;
@@ -35,13 +28,11 @@ public class StructureCreationRequest {
     @NotBlank(message = "Description is required")
     private String description;
 
-    private Map<String, @Valid Property> properties;
+    @NotBlank(message = "Target structure address is required")
+    private String targetStructureAddress;
 
-    private Map<String, @Valid Function> functions;
+    @NotNull(message = "Relationship type is required")
+    private RelationshipType type;
 
-    private Map<String, @Valid Event> events;
-
-    private Map<String, @Valid Relationship> relationships;
-
-    private Set<String> managementRoles;
+    private Set<String> allowedRoles;
 }

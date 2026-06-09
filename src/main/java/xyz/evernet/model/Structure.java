@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils;
 import xyz.evernet.embedded.Event;
 import xyz.evernet.embedded.Function;
 import xyz.evernet.embedded.Property;
+import xyz.evernet.embedded.Relationship;
 import xyz.evernet.exception.ClientException;
 import xyz.evernet.util.Json;
 import xyz.evernet.util.JsonSchemaUtil;
@@ -50,6 +51,8 @@ public class Structure {
     private Map<String, Function> functions;
 
     private Map<String, Event> events;
+
+    private Map<String, Relationship> relationships;
 
     private Set<String> managementRoles;
 

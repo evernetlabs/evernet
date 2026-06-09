@@ -5,9 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import xyz.evernet.bean.StructureAddress;
 import xyz.evernet.embedded.Event;
 import xyz.evernet.embedded.Function;
 import xyz.evernet.embedded.Property;
+import xyz.evernet.embedded.Relationship;
 import xyz.evernet.exception.ClientException;
 import xyz.evernet.exception.NotFoundException;
 import xyz.evernet.model.Structure;
@@ -73,6 +75,13 @@ public class StructureService {
             }
         }
 
+        if (!CollectionUtils.isEmpty(request.getRelationships())) {
+            for (Map.Entry<String, Relationship> entry : request.getRelationships().entrySet()) {
+                Relationship relationship = entry.getValue();
+                StructureAddress.from(relationship.getTargetStructureAddress());
+            }
+        }
+
         Set<String> managementRoles = request.getManagementRoles();
 
         if (CollectionUtils.isEmpty(managementRoles)) {
@@ -88,6 +97,7 @@ public class StructureService {
                 .properties(request.getProperties())
                 .functions(request.getFunctions())
                 .events(request.getEvents())
+                .relationships(request.getRelationships())
                 .managementRoles(managementRoles)
                 .creator(creator)
                 .build();
