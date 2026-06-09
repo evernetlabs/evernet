@@ -18,5 +18,11 @@ public enum NodeEventType {
 
     FUNCTION_EXECUTED,
 
-    EVENT_RAISED
+    EVENT_RAISED,
+
+    USER_ADDED,
+
+    USER_DELETED,
+
+    USER_UPDATED
 }
