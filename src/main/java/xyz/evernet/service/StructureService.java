@@ -15,8 +15,10 @@ import xyz.evernet.repository.StructureRepository;
 import xyz.evernet.request.StructureCreationRequest;
 import xyz.evernet.util.JsonSchemaUtil;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -71,6 +73,14 @@ public class StructureService {
             }
         }
 
+        Set<String> managementRoles = request.getManagementRoles();
+
+        if (CollectionUtils.isEmpty(managementRoles)) {
+            managementRoles = new HashSet<>();
+        }
+
+        managementRoles.add("creator");
+
         Structure structure = Structure.builder()
                 .identifier(request.getIdentifier())
                 .displayName(request.getDisplayName())
@@ -78,6 +88,7 @@ public class StructureService {
                 .properties(request.getProperties())
                 .functions(request.getFunctions())
                 .events(request.getEvents())
+                .managementRoles(managementRoles)
                 .creator(creator)
                 .build();
 

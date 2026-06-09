@@ -22,6 +22,7 @@ import xyz.evernet.util.JsonSchemaUtil;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -49,6 +50,8 @@ public class Structure {
     private Map<String, Function> functions;
 
     private Map<String, Event> events;
+
+    private Set<String> managementRoles;
 
     private String creator;
 

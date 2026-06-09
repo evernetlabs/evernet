@@ -13,6 +13,7 @@ import xyz.evernet.embedded.Function;
 import xyz.evernet.embedded.Property;
 
 import java.util.Map;
+import java.util.Set;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
@@ -38,4 +39,6 @@ public class StructureCreationRequest {
     private Map<String, @Valid Function> functions;
 
     private Map<String, @Valid Event> events;
+
+    private Set<String> managementRoles;
 }
