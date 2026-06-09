@@ -19,7 +19,7 @@ public class NodeController extends AuthenticatedUserController {
     private final NodeService nodeService;
 
     @PostMapping("/nodes")
-    public Node create(@Valid @RequestBody NodeCreationRequest request) {
+    public Node create(@Valid @RequestBody NodeCreationRequest request) throws Exception {
         return nodeService.create(request, getUsername());
     }
 }

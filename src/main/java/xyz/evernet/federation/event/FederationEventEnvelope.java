@@ -25,6 +25,9 @@ public class FederationEventEnvelope<E> {
     @NotNull(message = "Event data is required")
     private E event;
 
+    @NotBlank(message = "Event type is required")
+    private String eventType;
+
     @NotBlank(message = "Requester address is required")
     private String requesterAddress;
 

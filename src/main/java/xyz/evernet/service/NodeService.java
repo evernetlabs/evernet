@@ -5,6 +5,7 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import xyz.evernet.bean.NodeAddress;
 import xyz.evernet.bean.UserAddress;
+import xyz.evernet.federation.event.NodeCreationEvent;
 import xyz.evernet.model.Node;
 import xyz.evernet.model.Structure;
 import xyz.evernet.repository.NodeRepository;
@@ -26,7 +27,7 @@ public class NodeService {
 
     private final ConfigReaderService configReaderService;
 
-    public Node create(NodeCreationRequest request, String creator) {
+    public Node create(NodeCreationRequest request, String creator) throws Exception {
         String currentVertexEndpoint = configReaderService.getVertexEndpoint();
 
         UserAddress creatorAddress = UserAddress.builder()
@@ -62,6 +63,14 @@ public class NodeService {
                 .creatorAddress(creatorAddress.toString())
                 .build();
 
-        return nodeRepository.save(node);
+        node = nodeRepository.save(node);
+
+        nodeFederationService.transmitEvent(node, NodeCreationEvent.builder()
+                        .node(node)
+                .build(),
+                creatorAddress.toString()
+        );
+
+        return node;
     }
 }
