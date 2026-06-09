@@ -1,6 +1,7 @@
 package xyz.evernet.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -14,6 +15,7 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 @SuppressWarnings("unchecked")
+@Slf4j
 public class NodeFederationService {
 
     private final FederationHandlerFactory federationHandlerFactory;
@@ -51,19 +53,23 @@ public class NodeFederationService {
         }
 
         if (!localUsers.isEmpty()) {
-            federationHandler.receive(event, requesterAddress, localUsers);
+            federationHandler.receive(event, requesterAddress, localUsers, true);
         }
 
         if (!remoteUsers.isEmpty()) {
             for (Map.Entry<String, Set<String>> entry : remoteUsers.entrySet()) {
-                federationHandler
-                        .transmit(
-                                event,
-                                requesterAddress,
-                                currentVertexEndpoint,
-                                entry.getKey(),
-                                entry.getValue()
-                        );
+                try {
+                    federationHandler
+                            .transmit(
+                                    event,
+                                    requesterAddress,
+                                    currentVertexEndpoint,
+                                    entry.getKey(),
+                                    entry.getValue()
+                            );
+                }  catch (Exception e) {
+                    log.error("Error transmitting event", e);
+                }
             }
         }
     }
@@ -93,6 +99,6 @@ public class NodeFederationService {
         }
 
         FederationHandler<E> federationHandler = (FederationHandler<E>) federationHandlerFactory.getHandler(event.getClass());
-        federationHandler.receive(event, requesterAddress, filteredTargetUserAddresses);
+        federationHandler.receive(event, requesterAddress, filteredTargetUserAddresses, false);
     }
 }

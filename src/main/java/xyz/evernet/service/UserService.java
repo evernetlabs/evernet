@@ -7,6 +7,7 @@ import xyz.evernet.auth.AuthenticatedUser;
 import xyz.evernet.auth.Jwt;
 import xyz.evernet.exception.AuthenticationException;
 import xyz.evernet.exception.ClientException;
+import xyz.evernet.exception.NotAllowedException;
 import xyz.evernet.exception.NotFoundException;
 import xyz.evernet.model.User;
 import xyz.evernet.repository.UserRepository;
@@ -22,9 +23,16 @@ import xyz.evernet.util.Password;
 public class UserService {
 
     private final UserRepository userRepository;
+
     private final Jwt jwt;
 
+    private final ConfigService configService;
+
     public User signUp(UserSignUpRequest request) {
+        if (!configService.isInitialized()) {
+            throw new NotAllowedException();
+        }
+
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new ClientException("Username %s is already taken".formatted(request.getUsername()));
         }
@@ -41,7 +49,7 @@ public class UserService {
     public UserTokenResponse getToken(UserTokenRequest request) {
         User user = userRepository.findByUsername(request.getUsername());
 
-        if (user == null || !Password.verify(user.getPassword(), request.getPassword())) {
+        if (user == null || !Password.verify(request.getPassword(), user.getPassword())) {
             throw new AuthenticationException();
         }
 

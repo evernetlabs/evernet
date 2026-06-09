@@ -23,6 +23,10 @@ public class ConfigService {
 
     private final ConfigRepository configRepository;
 
+    public Boolean isInitialized() {
+        return configRepository.count() > 0;
+    }
+
     public void init(Vertex vertex, String federationProtocol, String jwtSigningKey, String signingPrivateKey, String signingPublicKey) {
         List<Config> configs = List.of(
                 Config.builder().key(JWT_SIGNING_KEY).value(jwtSigningKey).build(),

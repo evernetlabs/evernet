@@ -7,4 +7,5 @@ import xyz.evernet.model.Node;
 @Repository
 public interface NodeRepository extends MongoRepository<Node, String> {
 
+    Node findByAddress(String address);
 }

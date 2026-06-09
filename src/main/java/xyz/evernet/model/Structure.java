@@ -61,6 +61,14 @@ public class Structure {
     public Map<String, Object> validateProperties(Map<String, Object> properties) {
         Map<String, Object> validatedProperties = new HashMap<>();
 
+        if (properties == null) {
+            return validatedProperties;
+        }
+
+        if (this.properties == null) {
+            throw new ClientException("No properties can be set against structure %s".formatted(this.getIdentifier()));
+        }
+
         for (Map.Entry<String, Object> entry : properties.entrySet()) {
             String propertyIdentifier = entry.getKey();
             Object propertyValue = entry.getValue();

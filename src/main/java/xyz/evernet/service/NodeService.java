@@ -37,6 +37,10 @@ public class NodeService {
 
         Structure structure = structureRouterService.get(request.getStructureAddress());
 
+        if (request.getUsers() == null) {
+            request.setUsers(new HashMap<>());
+        }
+
         Map<String, Set<String>> users = new HashMap<>(request.getUsers());
 
         Set<String> creatorRoles = users.get(creatorAddress.toString());
