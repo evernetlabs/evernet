@@ -105,7 +105,45 @@ public class NodeFederationController extends AuthenticatedVertexController {
                 );
             }
 
-            case RELATIONSHIP_SET, RELATIONSHIP_UNSET, FUNCTION_CALLED, FUNCTION_EXECUTED -> throw new ClientException("Not implemented");
+            case RELATIONSHIP_SET -> {
+                NodeRelationshipSetEvent event = Json.decode(Json.encode(request.getEvent()), NodeRelationshipSetEvent.class);
+                nodeFederationService.receiveEvent(
+                        event,
+                        request.getTargetUserAddresses(),
+                        getSourceVertexEndpoint(),
+                        request.getRequesterAddress()
+                );
+            }
+
+            case RELATIONSHIP_UNSET -> {
+                NodeRelationshipUnsetEvent event = Json.decode(Json.encode(request.getEvent()), NodeRelationshipUnsetEvent.class);
+                nodeFederationService.receiveEvent(
+                        event,
+                        request.getTargetUserAddresses(),
+                        getSourceVertexEndpoint(),
+                        request.getRequesterAddress()
+                );
+            }
+
+            case FUNCTION_CALLED -> {
+                NodeFunctionCalledEvent event = Json.decode(Json.encode(request.getEvent()), NodeFunctionCalledEvent.class);
+                nodeFederationService.receiveEvent(
+                        event,
+                        request.getTargetUserAddresses(),
+                        getSourceVertexEndpoint(),
+                        request.getRequesterAddress()
+                );
+            }
+
+            case FUNCTION_EXECUTED -> {
+                NodeFunctionExecutedEvent event = Json.decode(Json.encode(request.getEvent()), NodeFunctionExecutedEvent.class);
+                nodeFederationService.receiveEvent(
+                        event,
+                        request.getTargetUserAddresses(),
+                        getSourceVertexEndpoint(),
+                        request.getRequesterAddress()
+                );
+            }
 
             default -> throw new ClientException("Unsupported event type %s".formatted(request.getEventType()));
         }
