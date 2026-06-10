@@ -8,7 +8,7 @@ import xyz.evernet.federation.NodeFederationClient;
 import xyz.evernet.federation.event.FederationEventEnvelope;
 import xyz.evernet.federation.event.NodeCreationEvent;
 import xyz.evernet.model.Node;
-import xyz.evernet.repository.NodeRepository;
+import xyz.evernet.service.NodeHelperService;
 
 import java.util.Set;
 
@@ -18,7 +18,7 @@ public class NodeCreationFederationHandler implements FederationHandler<NodeCrea
 
     private final NodeFederationClient nodeFederationClient;
 
-    private final NodeRepository nodeRepository;
+    private final NodeHelperService nodeHelperService;
 
     @Override
     public void transmit(NodeCreationEvent event, String requesterAddress, String sourceVertexEndpoint, String targetVertexEndpoint, Set<String> targetUserAddresses) throws Exception {
@@ -39,7 +39,7 @@ public class NodeCreationFederationHandler implements FederationHandler<NodeCrea
 
         Node node = event.getNode();
 
-        Node replicatedNode = nodeRepository.findByAddress(node.getAddress());
+        Node replicatedNode = nodeHelperService.findByAddress(node.getAddress());
 
         if (replicatedNode != null) {
             return;
@@ -53,7 +53,7 @@ public class NodeCreationFederationHandler implements FederationHandler<NodeCrea
                 .creatorAddress(node.getCreatorAddress())
                 .build();
 
-        nodeRepository.save(replicatedNode);
+        nodeHelperService.save(replicatedNode);
     }
 
     @Override

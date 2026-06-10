@@ -8,4 +8,6 @@ import xyz.evernet.model.Node;
 public interface NodeRepository extends MongoRepository<Node, String> {
 
     Node findByAddress(String address);
+
+    void deleteByAddress(String address);
 }

@@ -5,10 +5,11 @@ import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
 import xyz.evernet.bean.NodeAddress;
 import xyz.evernet.bean.UserAddress;
+import xyz.evernet.exception.NotAllowedException;
 import xyz.evernet.federation.event.NodeCreationEvent;
+import xyz.evernet.federation.event.NodeDeletionEvent;
 import xyz.evernet.model.Node;
 import xyz.evernet.model.Structure;
-import xyz.evernet.repository.NodeRepository;
 import xyz.evernet.request.NodeCreationRequest;
 
 import java.util.HashMap;
@@ -19,7 +20,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class NodeService {
 
-    private final NodeRepository nodeRepository;
+    private final NodeHelperService nodeHelperService;
 
     private final StructureRouterService structureRouterService;
 
@@ -67,7 +68,7 @@ public class NodeService {
                 .creatorAddress(creatorAddress.toString())
                 .build();
 
-        node = nodeRepository.save(node);
+        node = nodeHelperService.save(node);
 
         nodeFederationService.transmitEvent(node, NodeCreationEvent.builder()
                         .node(node)
@@ -76,5 +77,19 @@ public class NodeService {
         );
 
         return node;
+    }
+
+    public void delete(String nodeAddress, String requester) throws Exception {
+        UserAddress requesterAddress = UserAddress.builder().username(requester).vertexEndpoint(configReaderService.getVertexEndpoint()).build();
+
+        Node node = nodeHelperService.findByAddress(nodeAddress);
+
+        if (!nodeHelperService.hasManagementRole(node, requesterAddress.toString())) {
+            throw new NotAllowedException();
+        }
+
+        nodeHelperService.delete(nodeAddress);
+
+        nodeFederationService.transmitEvent(node, NodeDeletionEvent.builder().nodeAddress(node.getAddress()).build(), requesterAddress.toString());
     }
 }
