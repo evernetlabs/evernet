@@ -8,7 +8,9 @@ import xyz.evernet.federation.NodeFederationClient;
 import xyz.evernet.federation.event.FederationEventEnvelope;
 import xyz.evernet.federation.event.NodeCreationEvent;
 import xyz.evernet.model.Node;
+import xyz.evernet.model.Structure;
 import xyz.evernet.service.NodeHelperService;
+import xyz.evernet.service.StructureRouterService;
 
 import java.util.Set;
 
@@ -17,6 +19,8 @@ import java.util.Set;
 public class NodeCreationFederationHandler implements FederationHandler<NodeCreationEvent> {
 
     private final NodeFederationClient nodeFederationClient;
+
+    private final StructureRouterService structureRouterService;
 
     private final NodeHelperService nodeHelperService;
 
@@ -39,6 +43,8 @@ public class NodeCreationFederationHandler implements FederationHandler<NodeCrea
 
         Node node = event.getNode();
 
+        Structure structure = structureRouterService.get(node.getStructureAddress());
+
         Node replicatedNode = nodeHelperService.findByAddress(node.getAddress());
 
         if (replicatedNode != null) {
@@ -48,7 +54,7 @@ public class NodeCreationFederationHandler implements FederationHandler<NodeCrea
         replicatedNode = Node.builder()
                 .address(node.getAddress())
                 .structureAddress(node.getStructureAddress())
-                .properties(node.getProperties())
+                .properties(structure.validateProperties(node.getProperties()))
                 .users(node.getUsers())
                 .creatorAddress(node.getCreatorAddress())
                 .build();

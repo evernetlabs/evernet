@@ -71,28 +71,32 @@ public class Structure {
             return validatedProperties;
         }
 
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            String propertyIdentifier = entry.getKey();
+            Object propertyValue = entry.getValue();
+            validatedProperties.put(propertyIdentifier, validateProperty(propertyIdentifier, propertyValue));
+        }
+
+        return validatedProperties;
+    }
+
+    public Object validateProperty(String property, Object value) {
         if (this.properties == null) {
             throw new ClientException("No properties can be set against structure %s".formatted(this.getIdentifier()));
         }
 
-        for (Map.Entry<String, Object> entry : properties.entrySet()) {
-            String propertyIdentifier = entry.getKey();
-            Object propertyValue = entry.getValue();
+        Property propertyDefinition = this.properties.get(property);
 
-            Property propertyDefinition = this.properties.get(propertyIdentifier);
-            if (propertyDefinition == null) {
-                throw new ClientException("Property %s is not defined in the structure".formatted(propertyIdentifier));
-            }
-
-            if (StringUtils.hasText(propertyDefinition.getSchema())) {
-                if (!JsonSchemaUtil.isValidJson(propertyDefinition.getSchema(), Json.encode(propertyValue))) {
-                    throw new ClientException("Property %s does not conform to the defined schema".formatted(propertyIdentifier));
-                }
-            }
-
-            validatedProperties.put(propertyIdentifier, propertyValue);
+        if (propertyDefinition == null) {
+            throw new ClientException("Property %s is not defined in the structure".formatted(property));
         }
 
-        return validatedProperties;
+        if (StringUtils.hasText(propertyDefinition.getSchema())) {
+            if (!JsonSchemaUtil.isValidJson(propertyDefinition.getSchema(), Json.encode(value))) {
+                throw new ClientException("Property %s does not conform to the defined schema".formatted(property));
+            }
+        }
+
+        return value;
     }
 }

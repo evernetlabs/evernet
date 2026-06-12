@@ -8,9 +8,13 @@ import xyz.evernet.bean.UserAddress;
 import xyz.evernet.exception.NotAllowedException;
 import xyz.evernet.federation.event.NodeCreationEvent;
 import xyz.evernet.federation.event.NodeDeletionEvent;
+import xyz.evernet.federation.event.NodePropertySetEvent;
+import xyz.evernet.federation.event.NodePropertyUnsetEvent;
 import xyz.evernet.model.Node;
 import xyz.evernet.model.Structure;
 import xyz.evernet.request.NodeCreationRequest;
+import xyz.evernet.request.SetNodePropertyRequest;
+import xyz.evernet.request.UnsetNodePropertyRequest;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +76,7 @@ public class NodeService {
 
         nodeFederationService.transmitEvent(node, NodeCreationEvent.builder()
                         .node(node)
-                .build(),
+                        .build(),
                 creatorAddress.toString()
         );
 
@@ -91,5 +95,31 @@ public class NodeService {
         nodeHelperService.delete(nodeAddress);
 
         nodeFederationService.transmitEvent(node, NodeDeletionEvent.builder().nodeAddress(node.getAddress()).build(), requesterAddress.toString());
+    }
+
+    public void setProperty(String nodeAddress, SetNodePropertyRequest request, String requester) throws Exception {
+        UserAddress requesterAddress = UserAddress.builder().username(requester).vertexEndpoint(configReaderService.getVertexEndpoint()).build();
+
+        Node node = nodeHelperService.setProperty(nodeAddress, request.getPropertyIdentifier(), request.getValue(), requesterAddress.toString());
+
+        nodeFederationService.transmitEvent(node, NodePropertySetEvent
+                        .builder()
+                        .nodeAddress(nodeAddress)
+                        .propertyIdentifier(request.getPropertyIdentifier())
+                        .propertyValue(request.getValue())
+                        .build(),
+                requesterAddress.toString());
+    }
+
+    public void unsetProperty(String nodeAddress, UnsetNodePropertyRequest request, String requester) throws Exception {
+        UserAddress requesterAddress = UserAddress.builder().username(requester).vertexEndpoint(configReaderService.getVertexEndpoint()).build();
+
+        Node node = nodeHelperService.unsetProperty(nodeAddress, request.getPropertyIdentifier(), requesterAddress.toString());
+
+        nodeFederationService.transmitEvent(node, NodePropertyUnsetEvent.builder()
+                        .nodeAddress(node.getAddress())
+                        .propertyIdentifier(request.getPropertyIdentifier())
+                        .build(),
+                requesterAddress.toString());
     }
 }
